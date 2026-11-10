@@ -19,18 +19,16 @@ Status: **concluído** — https://github.com/josevictor1232006-hash/UNITASK-Tra
 
 ---
 
-## 1) Neon (banco primeiro) — FAÇA AGORA
+## 1) Neon (banco primeiro)
 
-1. Acesse https://neon.tech e crie/entrar na conta.
-2. **New Project** → nome `unitask` → PostgreSQL → região próxima (ex. São Paulo, se disponível).
-3. Em **Dashboard → Connection string**, copie a URL no formato:
-   `postgresql://USER:PASSWORD@HOST/DB?sslmode=require`
-4. Guarde em local seguro (bloco de notas / gerenciador de senhas). **Nunca** cole no GitHub.
-5. Para testar localmente (opcional):
-   - Cole em `backend/.env` como `DATABASE_URL=...`
-   - Rode `python manage.py migrate`
-6. No Render (próximo passo), a mesma string vira a variável `DATABASE_URL`.
-7. Migrations rodam no deploy do Render — não no painel do Neon.
+Status: **concluído** — projeto `hidden-hill-70575855` (`my-first-project`), org `org-orange-glitter-20441171`.
+
+Console: https://console.neon.tech/app/projects/hidden-hill-70575855/
+
+1. CLI Neon autenticada e projeto linkado via `neon init`.
+2. Variáveis em `.env.local` (raiz) e `DATABASE_URL` espelhada em `backend/.env` (locais, fora do Git).
+3. Migrations Django aplicadas no PostgreSQL Neon.
+4. No Render, cadastrar a mesma `DATABASE_URL` como secret (não versionar).
 
 ---
 

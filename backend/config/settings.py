@@ -3,6 +3,7 @@ Django settings for UniTask.
 """
 
 import os
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -86,6 +87,13 @@ DATABASES = {
         ssl_require=bool(os.getenv("DATABASE_URL")),
     )
 }
+
+# Evita criar/destruir databases temporários no Neon Free durante pytest/manage.py test
+if "test" in sys.argv:
+    DATABASES["default"] = {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "test_db.sqlite3",
+    }
 
 AUTH_USER_MODEL = "users.User"
 
