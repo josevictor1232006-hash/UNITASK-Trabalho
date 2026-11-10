@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Logo } from './components/Logo'
+import { UserAvatar } from './components/UserAvatar'
 import { AuthPanel } from './features/auth/AuthPanel'
 import { CalendarPanel } from './features/calendar/CalendarPanel'
 import { DashboardPanel } from './features/dashboard/DashboardPanel'
@@ -141,23 +142,23 @@ function App() {
 
   return (
     <main className="ut-shell mx-auto flex min-h-screen max-w-6xl flex-col gap-5 px-4 py-6 sm:px-6 sm:py-8">
-      <header className="ut-panel flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
-        <div className="flex items-center gap-4">
-          <Logo size="md" />
-          <div className="hidden h-10 w-px bg-slate-200 sm:block" />
-          <div>
-            <p className="text-xs font-semibold tracking-[0.16em] text-[var(--color-accent)] uppercase">
-              Olá
-            </p>
-            <h1 className="font-[family-name:var(--font-display)] text-xl font-bold text-[var(--color-brand)]">
-              {user.name}
-            </h1>
-            <p className="text-sm text-slate-500">{user.email}</p>
+      <header className="ut-panel flex flex-col gap-4 p-3.5 sm:flex-row sm:items-center sm:justify-between sm:p-4">
+        <Logo size="md" />
+
+        <div className="flex items-center gap-3 sm:ml-auto">
+          <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-slate-200/90 bg-white/80 py-1.5 pr-3 pl-1.5 shadow-sm">
+            <UserAvatar name={user.name} size="md" />
+            <div className="min-w-0 leading-tight">
+              <p className="truncate font-[family-name:var(--font-display)] text-sm font-bold text-[var(--color-brand)] sm:text-base">
+                {user.name}
+              </p>
+              <p className="truncate text-xs text-slate-500 sm:text-sm">{user.email}</p>
+            </div>
           </div>
+          <button type="button" onClick={handleLogout} className="ut-btn ut-btn-ghost shrink-0">
+            Sair
+          </button>
         </div>
-        <button type="button" onClick={handleLogout} className="ut-btn ut-btn-ghost">
-          Sair
-        </button>
       </header>
 
       <nav className="ut-nav" aria-label="Navegação principal">
