@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import { Modal } from '../../components/Modal'
 import {
   createEvent,
   deleteEvent,
@@ -47,6 +48,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState<number | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState('scheduled')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -75,9 +77,10 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
     void loadData()
   }, [statusFilter])
 
-  function resetForm() {
+  function openCreate() {
     setEditingId(null)
     setForm(emptyForm)
+    setModalOpen(true)
   }
 
   function startEdit(event: AcademicEvent) {
@@ -90,6 +93,13 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
       start_at: toInputValue(event.start_at),
       due_at: toInputValue(event.due_at),
     })
+    setModalOpen(true)
+  }
+
+  function closeModal() {
+    setModalOpen(false)
+    setEditingId(null)
+    setForm(emptyForm)
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -112,7 +122,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
       } else {
         await createEvent(payload)
       }
-      resetForm()
+      closeModal()
       await loadData()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao salvar evento.')
@@ -134,7 +144,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
     if (!window.confirm('Excluir este evento?')) return
     try {
       await deleteEvent(id)
-      if (editingId === id) resetForm()
+      if (editingId === id) closeModal()
       await loadData()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao excluir evento.')
@@ -148,118 +158,33 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
 
   return (
     <section className="ut-panel p-6">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold text-[var(--color-brand)]">
-          Provas e trabalhos
-        </h2>
-        <select
-          className="ut-input"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="scheduled">Agendados</option>
-          <option value="completed">Concluídos</option>
-          <option value="cancelled">Cancelados</option>
-          <option value="">Todos</option>
-        </select>
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-xl font-semibold text-[var(--color-brand)]">Provas e trabalhos</h2>
+        <div className="flex flex-wrap items-center gap-2">
+          <select
+            className="ut-input w-auto min-w-36"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="scheduled">Agendados</option>
+            <option value="completed">Concluídos</option>
+            <option value="cancelled">Cancelados</option>
+            <option value="">Todos</option>
+          </select>
+          <button type="button" className="ut-btn ut-btn-primary" onClick={openCreate}>
+            Adicionar evento
+          </button>
+        </div>
       </div>
 
-      <form className="mb-6 grid gap-3 sm:grid-cols-2" onSubmit={handleSubmit}>
-        <label className="block text-sm sm:col-span-2">
-          <span className="mb-1 block text-slate-600">Título *</span>
-          <input
-            className="ut-input"
-            value={form.title}
-            onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
-            required
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Tipo</span>
-          <select
-            className="ut-input"
-            value={form.event_type}
-            onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                event_type: e.target.value as AcademicEvent['event_type'],
-              }))
-            }
-          >
-            <option value="exam">Prova</option>
-            <option value="assignment">Trabalho</option>
-            <option value="other">Outro</option>
-          </select>
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Matéria</span>
-          <select
-            className="ut-input"
-            value={form.subject}
-            onChange={(e) => setForm((prev) => ({ ...prev, subject: e.target.value }))}
-          >
-            <option value="">Sem matéria</option>
-            {subjects.map((subject) => (
-              <option key={subject.id} value={subject.id}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Início *</span>
-          <input
-            type="datetime-local"
-            className="ut-input"
-            value={form.start_at}
-            onChange={(e) => setForm((prev) => ({ ...prev, start_at: e.target.value }))}
-            required
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Limite</span>
-          <input
-            type="datetime-local"
-            className="ut-input"
-            value={form.due_at}
-            onChange={(e) => setForm((prev) => ({ ...prev, due_at: e.target.value }))}
-          />
-        </label>
-        <label className="block text-sm sm:col-span-2">
-          <span className="mb-1 block text-slate-600">Descrição</span>
-          <textarea
-            className="ut-input"
-            rows={2}
-            value={form.description}
-            onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
-          />
-        </label>
-        <div className="flex gap-2 sm:col-span-2">
-          <button
-            type="submit"
-            disabled={saving}
-            className="ut-btn ut-btn-primary"
-          >
-            {saving ? 'Salvando…' : editingId ? 'Salvar evento' : 'Adicionar evento'}
-          </button>
-          {editingId && (
-            <button
-              type="button"
-              onClick={resetForm}
-              className="ut-btn ut-btn-ghost text-sm"
-            >
-              Cancelar
-            </button>
-          )}
-        </div>
-      </form>
-
-      {error && <p className="mb-3 text-sm text-[var(--color-danger)]">{error}</p>}
+      {error && !modalOpen && (
+        <p className="mb-3 text-sm text-[var(--color-danger)]">{error}</p>
+      )}
 
       {loading ? (
         <p className="text-slate-600">Carregando eventos…</p>
       ) : events.length === 0 ? (
-        <p className="text-slate-600">Nenhum evento neste filtro.</p>
+        <p className="text-slate-600">Nenhum evento neste filtro. Use o botão acima para criar.</p>
       ) : (
         <ul className="space-y-3">
           {events.map((item) => (
@@ -303,6 +228,95 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
           ))}
         </ul>
       )}
+
+      <Modal
+        open={modalOpen}
+        title={editingId ? 'Editar evento' : 'Adicionar evento'}
+        onClose={closeModal}
+      >
+        <form className="grid gap-3 sm:grid-cols-2" onSubmit={handleSubmit}>
+          <label className="block text-sm sm:col-span-2">
+            <span className="mb-1 block text-slate-600">Título *</span>
+            <input
+              className="ut-input"
+              value={form.title}
+              onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+              required
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Tipo</span>
+            <select
+              className="ut-input"
+              value={form.event_type}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  event_type: e.target.value as AcademicEvent['event_type'],
+                }))
+              }
+            >
+              <option value="exam">Prova</option>
+              <option value="assignment">Trabalho</option>
+              <option value="other">Outro</option>
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Matéria</span>
+            <select
+              className="ut-input"
+              value={form.subject}
+              onChange={(e) => setForm((prev) => ({ ...prev, subject: e.target.value }))}
+            >
+              <option value="">Sem matéria</option>
+              {subjects.map((subject) => (
+                <option key={subject.id} value={subject.id}>
+                  {subject.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Início *</span>
+            <input
+              type="datetime-local"
+              className="ut-input"
+              value={form.start_at}
+              onChange={(e) => setForm((prev) => ({ ...prev, start_at: e.target.value }))}
+              required
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Limite</span>
+            <input
+              type="datetime-local"
+              className="ut-input"
+              value={form.due_at}
+              onChange={(e) => setForm((prev) => ({ ...prev, due_at: e.target.value }))}
+            />
+          </label>
+          <label className="block text-sm sm:col-span-2">
+            <span className="mb-1 block text-slate-600">Descrição</span>
+            <textarea
+              className="ut-input"
+              rows={2}
+              value={form.description}
+              onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+            />
+          </label>
+          {error && modalOpen && (
+            <p className="text-sm text-[var(--color-danger)] sm:col-span-2">{error}</p>
+          )}
+          <div className="flex gap-2 sm:col-span-2">
+            <button type="submit" disabled={saving} className="ut-btn ut-btn-primary">
+              {saving ? 'Salvando…' : editingId ? 'Salvar evento' : 'Adicionar evento'}
+            </button>
+            <button type="button" onClick={closeModal} className="ut-btn ut-btn-ghost text-sm">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </Modal>
     </section>
   )
 }

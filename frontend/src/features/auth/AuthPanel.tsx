@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { PasswordField } from '../../components/PasswordField'
 import { loginUser, registerUser } from '../../services/api'
 
 type Mode = 'login' | 'register'
@@ -89,33 +90,28 @@ export function AuthPanel({ onAuthenticated }: AuthPanelProps) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            autoComplete="email"
           />
         </label>
 
-        <label className="block text-left text-sm">
-          <span className="mb-1.5 block font-medium text-slate-600">Senha</span>
-          <input
-            type="password"
-            className="ut-input"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            minLength={8}
-            required
-          />
-        </label>
+        <PasswordField
+          label="Senha"
+          value={password}
+          onChange={setPassword}
+          minLength={8}
+          required
+          autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+        />
 
         {mode === 'register' && (
-          <label className="block text-left text-sm">
-            <span className="mb-1.5 block font-medium text-slate-600">Confirmar senha</span>
-            <input
-              type="password"
-              className="ut-input"
-              value={passwordConfirm}
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-              minLength={8}
-              required
-            />
-          </label>
+          <PasswordField
+            label="Confirmar senha"
+            value={passwordConfirm}
+            onChange={setPasswordConfirm}
+            minLength={8}
+            required
+            autoComplete="new-password"
+          />
         )}
 
         {error && (

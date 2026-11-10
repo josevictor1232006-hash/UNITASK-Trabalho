@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import { Modal } from '../../components/Modal'
 import {
   createSubject,
   deleteSubject,
@@ -24,6 +25,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState<number | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -37,9 +39,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Falha ao carregar matérias.'
       setError(message)
-      if (message.toLowerCase().includes('sessão')) {
-        onAuthLost()
-      }
+      if (message.toLowerCase().includes('sessão')) onAuthLost()
     } finally {
       setLoading(false)
     }
@@ -48,6 +48,12 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
   useEffect(() => {
     void loadSubjects()
   }, [])
+
+  function openCreate() {
+    setEditingId(null)
+    setForm(emptyForm)
+    setModalOpen(true)
+  }
 
   function startEdit(subject: Subject) {
     setEditingId(subject.id)
@@ -58,9 +64,11 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
       color: subject.color || '#1E3A8A',
       passing_grade: subject.passing_grade,
     })
+    setModalOpen(true)
   }
 
-  function resetForm() {
+  function closeModal() {
+    setModalOpen(false)
     setEditingId(null)
     setForm(emptyForm)
   }
@@ -84,7 +92,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
       } else {
         await createSubject(payload)
       }
-      resetForm()
+      closeModal()
       await loadSubjects()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao salvar matéria.')
@@ -108,7 +116,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
     setError(null)
     try {
       await deleteSubject(id)
-      if (editingId === id) resetForm()
+      if (editingId === id) closeModal()
       await loadSubjects()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao excluir.')
@@ -117,85 +125,22 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
 
   return (
     <section className="ut-panel p-6">
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-xl font-semibold text-[var(--color-brand)]">Matérias</h2>
-        {editingId && (
-          <button
-            type="button"
-            onClick={resetForm}
-            className="text-sm text-slate-600 underline"
-          >
-            Cancelar edição
-          </button>
-        )}
+        <button type="button" className="ut-btn ut-btn-primary" onClick={openCreate}>
+          Adicionar matéria
+        </button>
       </div>
 
-      <form className="mb-6 grid gap-3 sm:grid-cols-2" onSubmit={handleSubmit}>
-        <label className="block text-left text-sm sm:col-span-2">
-          <span className="mb-1 block text-slate-600">Nome *</span>
-          <input
-            className="ut-input"
-            value={form.name}
-            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-            required
-          />
-        </label>
-        <label className="block text-left text-sm">
-          <span className="mb-1 block text-slate-600">Código</span>
-          <input
-            className="ut-input"
-            value={form.code}
-            onChange={(e) => setForm((prev) => ({ ...prev, code: e.target.value }))}
-          />
-        </label>
-        <label className="block text-left text-sm">
-          <span className="mb-1 block text-slate-600">Professor</span>
-          <input
-            className="ut-input"
-            value={form.professor}
-            onChange={(e) => setForm((prev) => ({ ...prev, professor: e.target.value }))}
-          />
-        </label>
-        <label className="block text-left text-sm">
-          <span className="mb-1 block text-slate-600">Cor</span>
-          <input
-            type="color"
-            className="h-10 w-full rounded-lg border border-slate-300 px-2 py-1"
-            value={form.color}
-            onChange={(e) => setForm((prev) => ({ ...prev, color: e.target.value }))}
-          />
-        </label>
-        <label className="block text-left text-sm">
-          <span className="mb-1 block text-slate-600">Média de aprovação</span>
-          <input
-            type="number"
-            min="0"
-            max="10"
-            step="0.1"
-            className="ut-input"
-            value={form.passing_grade}
-            onChange={(e) => setForm((prev) => ({ ...prev, passing_grade: e.target.value }))}
-            required
-          />
-        </label>
-        <div className="sm:col-span-2">
-          <button
-            type="submit"
-            disabled={saving}
-            className="ut-btn ut-btn-primary"
-          >
-            {saving ? 'Salvando…' : editingId ? 'Salvar alterações' : 'Adicionar matéria'}
-          </button>
-        </div>
-      </form>
-
-      {error && <p className="mb-3 text-sm text-[var(--color-danger)]">{error}</p>}
+      {error && !modalOpen && (
+        <p className="mb-3 text-sm text-[var(--color-danger)]">{error}</p>
+      )}
 
       {loading ? (
         <p className="text-slate-600">Carregando matérias…</p>
       ) : subjects.length === 0 ? (
         <p className="text-slate-600">
-          Nenhuma matéria ativa. Cadastre a primeira para organizar sua rotina.
+          Nenhuma matéria ativa. Use o botão acima para cadastrar a primeira.
         </p>
       ) : (
         <ul className="space-y-3">
@@ -246,6 +191,73 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
           ))}
         </ul>
       )}
+
+      <Modal
+        open={modalOpen}
+        title={editingId ? 'Editar matéria' : 'Adicionar matéria'}
+        onClose={closeModal}
+      >
+        <form className="grid gap-3 sm:grid-cols-2" onSubmit={handleSubmit}>
+          <label className="block text-left text-sm sm:col-span-2">
+            <span className="mb-1 block text-slate-600">Nome *</span>
+            <input
+              className="ut-input"
+              value={form.name}
+              onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+              required
+            />
+          </label>
+          <label className="block text-left text-sm">
+            <span className="mb-1 block text-slate-600">Código</span>
+            <input
+              className="ut-input"
+              value={form.code}
+              onChange={(e) => setForm((prev) => ({ ...prev, code: e.target.value }))}
+            />
+          </label>
+          <label className="block text-left text-sm">
+            <span className="mb-1 block text-slate-600">Professor</span>
+            <input
+              className="ut-input"
+              value={form.professor}
+              onChange={(e) => setForm((prev) => ({ ...prev, professor: e.target.value }))}
+            />
+          </label>
+          <label className="block text-left text-sm">
+            <span className="mb-1 block text-slate-600">Cor</span>
+            <input
+              type="color"
+              className="h-10 w-full rounded-lg border border-slate-300 px-2 py-1"
+              value={form.color}
+              onChange={(e) => setForm((prev) => ({ ...prev, color: e.target.value }))}
+            />
+          </label>
+          <label className="block text-left text-sm">
+            <span className="mb-1 block text-slate-600">Média de aprovação</span>
+            <input
+              type="number"
+              min="0"
+              max="10"
+              step="0.1"
+              className="ut-input"
+              value={form.passing_grade}
+              onChange={(e) => setForm((prev) => ({ ...prev, passing_grade: e.target.value }))}
+              required
+            />
+          </label>
+          {error && modalOpen && (
+            <p className="text-sm text-[var(--color-danger)] sm:col-span-2">{error}</p>
+          )}
+          <div className="flex gap-2 sm:col-span-2">
+            <button type="submit" disabled={saving} className="ut-btn ut-btn-primary">
+              {saving ? 'Salvando…' : editingId ? 'Salvar alterações' : 'Adicionar matéria'}
+            </button>
+            <button type="button" onClick={closeModal} className="ut-btn ut-btn-ghost text-sm">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </Modal>
     </section>
   )
 }

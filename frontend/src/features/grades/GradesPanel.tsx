@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import { Modal } from '../../components/Modal'
 import {
   createAssessment,
   deleteAssessment,
@@ -30,6 +31,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
   const [summary, setSummary] = useState<GradeSummary | null>(null)
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState<number | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -81,9 +83,10 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
     void loadGrades(subjectId)
   }, [subjectId])
 
-  function resetForm() {
+  function openCreate() {
     setEditingId(null)
     setForm(emptyForm)
+    setModalOpen(true)
   }
 
   function startEdit(item: Assessment) {
@@ -94,6 +97,13 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
       weight: item.weight ?? '',
       date: item.date ?? '',
     })
+    setModalOpen(true)
+  }
+
+  function closeModal() {
+    setModalOpen(false)
+    setEditingId(null)
+    setForm(emptyForm)
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -119,7 +129,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
       } else {
         await createAssessment(payload)
       }
-      resetForm()
+      closeModal()
       await loadGrades(subjectId)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao salvar avaliação.')
@@ -132,7 +142,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
     if (!window.confirm('Excluir esta avaliação?')) return
     try {
       await deleteAssessment(id)
-      if (editingId === id) resetForm()
+      if (editingId === id) closeModal()
       await loadGrades(subjectId)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao excluir avaliação.')
@@ -143,28 +153,38 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
 
   return (
     <section className="ut-panel p-6">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold text-[var(--color-brand)]">Notas e médias</h2>
           <p className="text-sm text-slate-600">
             Pesos opcionais · aprovação padrão {selectedSubject?.passing_grade ?? '6.00'}
           </p>
         </div>
-        <select
-          className="ut-input"
-          value={subjectId}
-          onChange={(e) => {
-            resetForm()
-            setSubjectId(e.target.value)
-          }}
-        >
-          {subjects.length === 0 && <option value="">Nenhuma matéria</option>}
-          {subjects.map((subject) => (
-            <option key={subject.id} value={subject.id}>
-              {subject.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex flex-wrap items-center gap-2">
+          <select
+            className="ut-input w-auto min-w-40"
+            value={subjectId}
+            onChange={(e) => {
+              closeModal()
+              setSubjectId(e.target.value)
+            }}
+          >
+            {subjects.length === 0 && <option value="">Nenhuma matéria</option>}
+            {subjects.map((subject) => (
+              <option key={subject.id} value={subject.id}>
+                {subject.name}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            className="ut-btn ut-btn-primary"
+            onClick={openCreate}
+            disabled={!subjectId}
+          >
+            Adicionar avaliação
+          </button>
+        </div>
       </div>
 
       {summary && (
@@ -213,82 +233,18 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
         </div>
       )}
 
-      <form className="mb-6 grid gap-3 sm:grid-cols-2" onSubmit={handleSubmit}>
-        <label className="block text-sm sm:col-span-2">
-          <span className="mb-1 block text-slate-600">Avaliação *</span>
-          <input
-            className="ut-input"
-            value={form.name}
-            onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
-            placeholder="Ex.: P1, Trabalho 1"
-            required
-            disabled={!subjectId}
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Nota (0–10)</span>
-          <input
-            type="number"
-            min="0"
-            max="10"
-            step="0.01"
-            className="ut-input"
-            value={form.score}
-            onChange={(e) => setForm((prev) => ({ ...prev, score: e.target.value }))}
-            placeholder="Vazio = pendente"
-            disabled={!subjectId}
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Peso (opcional)</span>
-          <input
-            type="number"
-            min="0"
-            step="0.01"
-            className="ut-input"
-            value={form.weight}
-            onChange={(e) => setForm((prev) => ({ ...prev, weight: e.target.value }))}
-            disabled={!subjectId}
-          />
-        </label>
-        <label className="block text-sm sm:col-span-2">
-          <span className="mb-1 block text-slate-600">Data</span>
-          <input
-            type="date"
-            className="ut-input"
-            value={form.date}
-            onChange={(e) => setForm((prev) => ({ ...prev, date: e.target.value }))}
-            disabled={!subjectId}
-          />
-        </label>
-        <div className="flex gap-2 sm:col-span-2">
-          <button
-            type="submit"
-            disabled={saving || !subjectId}
-            className="ut-btn ut-btn-primary"
-          >
-            {saving ? 'Salvando…' : editingId ? 'Salvar avaliação' : 'Adicionar avaliação'}
-          </button>
-          {editingId && (
-            <button
-              type="button"
-              onClick={resetForm}
-              className="ut-btn ut-btn-ghost text-sm"
-            >
-              Cancelar
-            </button>
-          )}
-        </div>
-      </form>
-
-      {error && <p className="mb-3 text-sm text-[var(--color-danger)]">{error}</p>}
+      {error && !modalOpen && (
+        <p className="mb-3 text-sm text-[var(--color-danger)]">{error}</p>
+      )}
 
       {loading ? (
         <p className="text-slate-600">Carregando avaliações…</p>
       ) : !subjectId ? (
         <p className="text-slate-600">Cadastre uma matéria para lançar notas.</p>
       ) : assessments.length === 0 ? (
-        <p className="text-slate-600">Nenhuma avaliação nesta matéria.</p>
+        <p className="text-slate-600">
+          Nenhuma avaliação nesta matéria. Use o botão acima para adicionar.
+        </p>
       ) : (
         <ul className="space-y-3">
           {assessments.map((item) => (
@@ -301,7 +257,9 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
                 <p className="text-sm text-slate-500">
                   Nota: {item.score ?? 'Pendente'}
                   {item.weight != null ? ` · Peso: ${item.weight}` : ''}
-                  {item.date ? ` · ${new Date(`${item.date}T12:00:00`).toLocaleDateString('pt-BR')}` : ''}
+                  {item.date
+                    ? ` · ${new Date(`${item.date}T12:00:00`).toLocaleDateString('pt-BR')}`
+                    : ''}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2">
@@ -324,6 +282,69 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
           ))}
         </ul>
       )}
+
+      <Modal
+        open={modalOpen}
+        title={editingId ? 'Editar avaliação' : 'Adicionar avaliação'}
+        onClose={closeModal}
+      >
+        <form className="grid gap-3 sm:grid-cols-2" onSubmit={handleSubmit}>
+          <label className="block text-sm sm:col-span-2">
+            <span className="mb-1 block text-slate-600">Avaliação *</span>
+            <input
+              className="ut-input"
+              value={form.name}
+              onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+              placeholder="Ex.: P1, Trabalho 1"
+              required
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Nota (0–10)</span>
+            <input
+              type="number"
+              min="0"
+              max="10"
+              step="0.01"
+              className="ut-input"
+              value={form.score}
+              onChange={(e) => setForm((prev) => ({ ...prev, score: e.target.value }))}
+              placeholder="Vazio = pendente"
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Peso (opcional)</span>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              className="ut-input"
+              value={form.weight}
+              onChange={(e) => setForm((prev) => ({ ...prev, weight: e.target.value }))}
+            />
+          </label>
+          <label className="block text-sm sm:col-span-2">
+            <span className="mb-1 block text-slate-600">Data</span>
+            <input
+              type="date"
+              className="ut-input"
+              value={form.date}
+              onChange={(e) => setForm((prev) => ({ ...prev, date: e.target.value }))}
+            />
+          </label>
+          {error && modalOpen && (
+            <p className="text-sm text-[var(--color-danger)] sm:col-span-2">{error}</p>
+          )}
+          <div className="flex gap-2 sm:col-span-2">
+            <button type="submit" disabled={saving} className="ut-btn ut-btn-primary">
+              {saving ? 'Salvando…' : editingId ? 'Salvar avaliação' : 'Adicionar avaliação'}
+            </button>
+            <button type="button" onClick={closeModal} className="ut-btn ut-btn-ghost text-sm">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </Modal>
     </section>
   )
 }

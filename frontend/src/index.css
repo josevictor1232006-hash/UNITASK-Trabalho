@@ -225,6 +225,38 @@ body {
   }
 }
 
+.ut-modal-root {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.ut-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  background: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+
+.ut-modal-panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 36rem);
+  max-height: min(90vh, 44rem);
+  overflow: auto;
+  border-radius: 1.35rem;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.28);
+  padding: 1.25rem 1.35rem 1.4rem;
+  animation: ut-fade-up 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ut-shell,
   .ut-btn,

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
+import { Modal } from '../../components/Modal'
 import {
   createTask,
   deleteTask,
@@ -53,6 +54,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
   const [subjects, setSubjects] = useState<Subject[]>([])
   const [form, setForm] = useState(emptyForm)
   const [editingId, setEditingId] = useState<number | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -81,9 +83,10 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
     void loadData()
   }, [statusFilter])
 
-  function resetForm() {
+  function openCreate() {
     setEditingId(null)
     setForm(emptyForm)
+    setModalOpen(true)
   }
 
   function startEdit(task: TaskItem) {
@@ -96,6 +99,13 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
       priority: task.priority,
       status: task.status,
     })
+    setModalOpen(true)
+  }
+
+  function closeModal() {
+    setModalOpen(false)
+    setEditingId(null)
+    setForm(emptyForm)
   }
 
   async function handleSubmit(event: FormEvent) {
@@ -118,7 +128,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
       } else {
         await createTask(payload)
       }
-      resetForm()
+      closeModal()
       await loadData()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao salvar tarefa.')
@@ -142,7 +152,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
     if (!window.confirm('Excluir esta tarefa?')) return
     try {
       await deleteTask(id)
-      if (editingId === id) resetForm()
+      if (editingId === id) closeModal()
       await loadData()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Falha ao excluir tarefa.')
@@ -156,123 +166,33 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
 
   return (
     <section className="ut-panel p-6">
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-xl font-semibold text-[var(--color-brand)]">Tarefas</h2>
-        <select
-          className="ut-input"
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-        >
-          <option value="">Todas</option>
-          <option value="pending">Pendentes</option>
-          <option value="in_progress">Em andamento</option>
-          <option value="done">Concluídas</option>
-        </select>
+        <div className="flex flex-wrap items-center gap-2">
+          <select
+            className="ut-input w-auto min-w-36"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="">Todas</option>
+            <option value="pending">Pendentes</option>
+            <option value="in_progress">Em andamento</option>
+            <option value="done">Concluídas</option>
+          </select>
+          <button type="button" className="ut-btn ut-btn-primary" onClick={openCreate}>
+            Adicionar tarefa
+          </button>
+        </div>
       </div>
 
-      <form className="mb-6 grid gap-3 sm:grid-cols-2" onSubmit={handleSubmit}>
-        <label className="block text-sm sm:col-span-2">
-          <span className="mb-1 block text-slate-600">Título *</span>
-          <input
-            className="ut-input"
-            value={form.title}
-            onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
-            required
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Matéria</span>
-          <select
-            className="ut-input"
-            value={form.subject}
-            onChange={(e) => setForm((prev) => ({ ...prev, subject: e.target.value }))}
-          >
-            <option value="">Sem matéria</option>
-            {subjects.map((subject) => (
-              <option key={subject.id} value={subject.id}>
-                {subject.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Prioridade</span>
-          <select
-            className="ut-input"
-            value={form.priority}
-            onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                priority: e.target.value as TaskItem['priority'],
-              }))
-            }
-          >
-            <option value="low">Baixa</option>
-            <option value="medium">Média</option>
-            <option value="high">Alta</option>
-          </select>
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Prazo</span>
-          <input
-            type="datetime-local"
-            className="ut-input"
-            value={form.due_at}
-            onChange={(e) => setForm((prev) => ({ ...prev, due_at: e.target.value }))}
-          />
-        </label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-slate-600">Status</span>
-          <select
-            className="ut-input"
-            value={form.status}
-            onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                status: e.target.value as TaskItem['status'],
-              }))
-            }
-          >
-            <option value="pending">Pendente</option>
-            <option value="in_progress">Em andamento</option>
-            <option value="done">Concluída</option>
-          </select>
-        </label>
-        <label className="block text-sm sm:col-span-2">
-          <span className="mb-1 block text-slate-600">Descrição</span>
-          <textarea
-            className="ut-input"
-            rows={2}
-            value={form.description}
-            onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
-          />
-        </label>
-        <div className="flex gap-2 sm:col-span-2">
-          <button
-            type="submit"
-            disabled={saving}
-            className="ut-btn ut-btn-primary"
-          >
-            {saving ? 'Salvando…' : editingId ? 'Salvar tarefa' : 'Adicionar tarefa'}
-          </button>
-          {editingId && (
-            <button
-              type="button"
-              onClick={resetForm}
-              className="ut-btn ut-btn-ghost text-sm"
-            >
-              Cancelar
-            </button>
-          )}
-        </div>
-      </form>
-
-      {error && <p className="mb-3 text-sm text-[var(--color-danger)]">{error}</p>}
+      {error && !modalOpen && (
+        <p className="mb-3 text-sm text-[var(--color-danger)]">{error}</p>
+      )}
 
       {loading ? (
         <p className="text-slate-600">Carregando tarefas…</p>
       ) : tasks.length === 0 ? (
-        <p className="text-slate-600">Nenhuma tarefa neste filtro.</p>
+        <p className="text-slate-600">Nenhuma tarefa neste filtro. Use o botão acima para criar.</p>
       ) : (
         <ul className="space-y-3">
           {tasks.map((task) => (
@@ -315,6 +235,102 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
           ))}
         </ul>
       )}
+
+      <Modal
+        open={modalOpen}
+        title={editingId ? 'Editar tarefa' : 'Adicionar tarefa'}
+        onClose={closeModal}
+      >
+        <form className="grid gap-3 sm:grid-cols-2" onSubmit={handleSubmit}>
+          <label className="block text-sm sm:col-span-2">
+            <span className="mb-1 block text-slate-600">Título *</span>
+            <input
+              className="ut-input"
+              value={form.title}
+              onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
+              required
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Matéria</span>
+            <select
+              className="ut-input"
+              value={form.subject}
+              onChange={(e) => setForm((prev) => ({ ...prev, subject: e.target.value }))}
+            >
+              <option value="">Sem matéria</option>
+              {subjects.map((subject) => (
+                <option key={subject.id} value={subject.id}>
+                  {subject.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Prioridade</span>
+            <select
+              className="ut-input"
+              value={form.priority}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  priority: e.target.value as TaskItem['priority'],
+                }))
+              }
+            >
+              <option value="low">Baixa</option>
+              <option value="medium">Média</option>
+              <option value="high">Alta</option>
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Prazo</span>
+            <input
+              type="datetime-local"
+              className="ut-input"
+              value={form.due_at}
+              onChange={(e) => setForm((prev) => ({ ...prev, due_at: e.target.value }))}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-slate-600">Status</span>
+            <select
+              className="ut-input"
+              value={form.status}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  status: e.target.value as TaskItem['status'],
+                }))
+              }
+            >
+              <option value="pending">Pendente</option>
+              <option value="in_progress">Em andamento</option>
+              <option value="done">Concluída</option>
+            </select>
+          </label>
+          <label className="block text-sm sm:col-span-2">
+            <span className="mb-1 block text-slate-600">Descrição</span>
+            <textarea
+              className="ut-input"
+              rows={2}
+              value={form.description}
+              onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
+            />
+          </label>
+          {error && modalOpen && (
+            <p className="text-sm text-[var(--color-danger)] sm:col-span-2">{error}</p>
+          )}
+          <div className="flex gap-2 sm:col-span-2">
+            <button type="submit" disabled={saving} className="ut-btn ut-btn-primary">
+              {saving ? 'Salvando…' : editingId ? 'Salvar tarefa' : 'Adicionar tarefa'}
+            </button>
+            <button type="button" onClick={closeModal} className="ut-btn ut-btn-ghost text-sm">
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </Modal>
     </section>
   )
 }
