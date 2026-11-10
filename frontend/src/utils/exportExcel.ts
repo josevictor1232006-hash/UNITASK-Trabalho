@@ -1,35 +1,30 @@
-/** Exporta CSV UTF-8 com BOM (abre no Excel). Separador `;` para locale pt-BR. */
-
 type Cell = string | number | boolean | null | undefined
 
-function escapeCell(value: Cell): string {
-  const text = value == null ? '' : String(value)
-  if (/[";\n\r]/.test(text)) {
-    return `"${text.replace(/"/g, '""')}"`
-  }
-  return text
-}
-
-export function exportToExcel(
+export async function exportToExcel(
   filename: string,
   headers: string[],
   rows: Cell[][],
-): void {
-  const sep = ';'
-  const lines = [
-    headers.map(escapeCell).join(sep),
-    ...rows.map((row) => headers.map((_, i) => escapeCell(row[i])).join(sep)),
+  sheetName = 'Relatório',
+): Promise<void> {
+  const XLSX = await import('xlsx')
+  const data = [
+    headers,
+    ...rows.map((row) => headers.map((_, i) => (row[i] == null ? '' : row[i]))),
   ]
-  const blob = new Blob([`\uFEFF${lines.join('\r\n')}`], {
-    type: 'text/csv;charset=utf-8;',
+  const worksheet = XLSX.utils.aoa_to_sheet(data)
+  worksheet['!cols'] = headers.map((header, index) => {
+    const maxLen = Math.max(
+      header.length,
+      ...rows.map((row) => String(row[index] ?? '').length),
+      8,
+    )
+    return { wch: Math.min(maxLen + 2, 40) }
   })
-  const url = URL.createObjectURL(blob)
-  const anchor = document.createElement('a')
-  const safeName = filename.endsWith('.csv') ? filename : `${filename}.csv`
-  anchor.href = url
-  anchor.download = safeName
-  anchor.click()
-  URL.revokeObjectURL(url)
+
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worksheet, sheetName.slice(0, 31))
+  const safeName = filename.endsWith('.xlsx') ? filename : `${filename}.xlsx`
+  XLSX.writeFile(workbook, safeName)
 }
 
 export function stampFilename(prefix: string): string {
@@ -37,7 +32,7 @@ export function stampFilename(prefix: string): string {
   const stamp = [
     now.getFullYear(),
     String(now.getMonth() + 1).padStart(2, '0'),
-    String(now.getDate()).padStart(2, '0'),
+    now.getDate().toString().padStart(2, '0'),
   ].join('')
-  return `${prefix}_${stamp}.csv`
+  return `${prefix}_${stamp}.xlsx`
 }
