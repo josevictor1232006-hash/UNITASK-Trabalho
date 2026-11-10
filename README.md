@@ -109,5 +109,5 @@ Detalhes: [docs/deployment.md](docs/deployment.md)
 
 ## Status atual
 
-**Fase 2 — Auth:** cadastro/login JWT, perfil `/me`, frontend com painel de autenticação.  
-**Próximo infra:** criar projeto PostgreSQL no Neon (ver [docs/deployment.md](docs/deployment.md)).
+**Fase 2 — Auth + Neon:** JWT pronto e PostgreSQL Neon conectado.  
+**Agora:** publicar a API no Render (ver [docs/deployment.md](docs/deployment.md) seção 2).

@@ -32,7 +32,12 @@ Console: https://console.neon.tech/app/projects/hidden-hill-70575855/
 
 ---
 
-## 2) Render (API) — FAÇA AGORA
+## 2) Render (API)
+
+Status: **concluído** — `https://unitask-api-2nvd.onrender.com`  
+Health: `https://unitask-api-2nvd.onrender.com/api/health/` → `{"status":"ok","service":"unitask-api"}`
+
+### Como foi feito
 
 O repositório inclui `render.yaml` (Blueprint). Prefira esse caminho.
 
@@ -89,7 +94,7 @@ O repositório inclui `render.yaml` (Blueprint). Prefira esse caminho.
 
 ---
 
-## 3) Vercel (frontend)
+## 3) Vercel (frontend) — FAÇA AGORA
 
 1. **Add New Project** → mesmo repo.
 2. Configuração:
