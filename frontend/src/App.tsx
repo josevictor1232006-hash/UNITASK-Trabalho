@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AuthPanel } from './features/auth/AuthPanel'
+import { EventsPanel } from './features/events/EventsPanel'
 import { SubjectsPanel } from './features/subjects/SubjectsPanel'
+import { TasksPanel } from './features/tasks/TasksPanel'
 import {
   API_BASE_URL,
   checkApiHealth,
@@ -11,11 +13,18 @@ import {
 } from './services/api'
 
 type HealthState = 'loading' | 'ok' | 'error'
+type Tab = 'subjects' | 'events' | 'tasks'
 
 function App() {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [sessionLoading, setSessionLoading] = useState(true)
   const [health, setHealth] = useState<HealthState>('loading')
+  const [tab, setTab] = useState<Tab>('subjects')
+
+  const handleAuthLost = useCallback(() => {
+    clearTokens()
+    setUser(null)
+  }, [])
 
   const loadSession = useCallback(async () => {
     if (!getAccessToken()) {
@@ -105,17 +114,39 @@ function App() {
         </button>
       </header>
 
-      <SubjectsPanel
-        onAuthLost={() => {
-          clearTokens()
-          setUser(null)
-        }}
-      />
+      <nav className="flex flex-wrap gap-2">
+        {(
+          [
+            ['subjects', 'Matérias'],
+            ['events', 'Provas e trabalhos'],
+            ['tasks', 'Tarefas'],
+          ] as const
+        ).map(([id, label]) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setTab(id)}
+            className={`rounded-lg px-4 py-2 text-sm font-medium ${
+              tab === id
+                ? 'bg-[var(--color-brand)] text-white'
+                : 'border border-slate-300 bg-white text-slate-700'
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
+
+      {tab === 'subjects' && <SubjectsPanel onAuthLost={handleAuthLost} />}
+      {tab === 'events' && <EventsPanel onAuthLost={handleAuthLost} />}
+      {tab === 'tasks' && <TasksPanel onAuthLost={handleAuthLost} />}
 
       <aside className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-xs text-slate-500">
         <p className="font-medium text-slate-600">Status interno da API</p>
         {health === 'loading' && <p>Verificando…</p>}
-        {health === 'ok' && <p className="text-[var(--color-success)]">Conectada ({API_BASE_URL})</p>}
+        {health === 'ok' && (
+          <p className="text-[var(--color-success)]">Conectada ({API_BASE_URL})</p>
+        )}
         {health === 'error' && (
           <p className="text-[var(--color-danger)]">
             Indisponível. Se estiver em produção, aguarde o cold start do Render.

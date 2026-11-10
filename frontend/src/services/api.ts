@@ -33,6 +33,51 @@ export type SubjectPayload = {
   is_archived?: boolean
 }
 
+export type AcademicEvent = {
+  id: number
+  subject: number | null
+  title: string
+  description: string
+  event_type: 'exam' | 'assignment' | 'other'
+  start_at: string
+  due_at: string | null
+  status: 'scheduled' | 'completed' | 'cancelled'
+  created_at: string
+}
+
+export type AcademicEventPayload = {
+  subject?: number | null
+  title: string
+  description?: string
+  event_type: AcademicEvent['event_type']
+  start_at: string
+  due_at?: string | null
+  status?: AcademicEvent['status']
+}
+
+export type TaskItem = {
+  id: number
+  subject: number | null
+  academic_event: number | null
+  title: string
+  description: string
+  due_at: string | null
+  status: 'pending' | 'in_progress' | 'done'
+  priority: 'low' | 'medium' | 'high'
+  created_at: string
+  updated_at: string
+}
+
+export type TaskPayload = {
+  subject?: number | null
+  academic_event?: number | null
+  title: string
+  description?: string
+  due_at?: string | null
+  status?: TaskItem['status']
+  priority?: TaskItem['priority']
+}
+
 type TokenPair = {
   access: string
   refresh: string
@@ -153,6 +198,84 @@ export async function updateSubject(id: number, payload: Partial<SubjectPayload>
 
 export async function deleteSubject(id: number): Promise<void> {
   const response = await authFetch(`/api/subjects/${id}/`, { method: 'DELETE' })
+  if (!response.ok) throw new Error(await parseError(response))
+}
+
+export async function listEvents(params: {
+  status?: string
+  subject?: number | string
+} = {}): Promise<AcademicEvent[]> {
+  const query = new URLSearchParams()
+  if (params.status) query.set('status', params.status)
+  if (params.subject) query.set('subject', String(params.subject))
+  const suffix = query.toString() ? `?${query}` : ''
+  const response = await authFetch(`/api/events/${suffix}`)
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function createEvent(payload: AcademicEventPayload): Promise<AcademicEvent> {
+  const response = await authFetch('/api/events/', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function updateEvent(
+  id: number,
+  payload: Partial<AcademicEventPayload>,
+): Promise<AcademicEvent> {
+  const response = await authFetch(`/api/events/${id}/`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function deleteEvent(id: number): Promise<void> {
+  const response = await authFetch(`/api/events/${id}/`, { method: 'DELETE' })
+  if (!response.ok) throw new Error(await parseError(response))
+}
+
+export async function listTasks(params: {
+  status?: string
+  subject?: number | string
+} = {}): Promise<TaskItem[]> {
+  const query = new URLSearchParams()
+  if (params.status) query.set('status', params.status)
+  if (params.subject) query.set('subject', String(params.subject))
+  const suffix = query.toString() ? `?${query}` : ''
+  const response = await authFetch(`/api/tasks/${suffix}`)
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function createTask(payload: TaskPayload): Promise<TaskItem> {
+  const response = await authFetch('/api/tasks/', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function updateTask(
+  id: number,
+  payload: Partial<TaskPayload>,
+): Promise<TaskItem> {
+  const response = await authFetch(`/api/tasks/${id}/`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function deleteTask(id: number): Promise<void> {
+  const response = await authFetch(`/api/tasks/${id}/`, { method: 'DELETE' })
   if (!response.ok) throw new Error(await parseError(response))
 }
 

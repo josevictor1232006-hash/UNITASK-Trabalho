@@ -108,8 +108,12 @@ Detalhes: [docs/deployment.md](docs/deployment.md)
 | GET/PATCH | `/api/auth/me/` | Bearer JWT |
 | GET/POST | `/api/subjects/` | Bearer JWT |
 | GET/PATCH/DELETE | `/api/subjects/{id}/` | Bearer JWT |
+| GET/POST | `/api/events/` | Bearer JWT |
+| GET/PATCH/DELETE | `/api/events/{id}/` | Bearer JWT |
+| GET/POST | `/api/tasks/` | Bearer JWT |
+| GET/PATCH/DELETE | `/api/tasks/{id}/` | Bearer JWT |
 
 ## Status atual
 
-**Fase 3 — Matérias:** CRUD + arquivar, com isolamento por usuário.  
+**Fase 4 — Eventos e tarefas:** provas/trabalhos e tarefas com filtros e isolamento por usuário.  
 App: https://unitask-trabalho.vercel.app · API: https://unitask-api-2nvd.onrender.com
