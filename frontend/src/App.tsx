@@ -81,7 +81,8 @@ function App() {
         )}
         {health === 'error' && (
           <p className="font-medium text-[var(--color-danger)]">
-            API indisponível. Inicie o backend em localhost:8000.
+            API indisponível. Verifique a URL em VITE_API_BASE_URL e o CORS no
+            Render. Em local, inicie o backend em localhost:8000.
           </p>
         )}
       </div>

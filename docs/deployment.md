@@ -94,30 +94,26 @@ O repositório inclui `render.yaml` (Blueprint). Prefira esse caminho.
 
 ---
 
-## 3) Vercel (frontend) — FAÇA AGORA
+## 3) Vercel (frontend)
 
-1. **Add New Project** → mesmo repo.
-2. Configuração:
+Status: **concluído** — https://unitask-trabalho.vercel.app  
+Env: `VITE_API_BASE_URL=https://unitask-api-2nvd.onrender.com`
 
-| Campo | Valor |
-|---|---|
-| Root Directory | `frontend` |
-| Framework | Vite |
-| Build Command | `npm run build` |
-| Output Directory | `dist` |
-
-3. Env: `VITE_API_BASE_URL=https://<sua-api>.onrender.com` (sem barra final).
-4. Deploy → copiar URL do frontend.
-5. `vercel.json` com rewrite SPA para `index.html`.
+1. Root Directory: `frontend`
+2. Framework: Vite · Build: `npm run build` · Output: `dist`
+3. `vercel.json` com rewrite SPA.
 
 ---
 
-## 4) Fechar o circuito
+## 4) Fechar o circuito (CORS)
 
-1. No Render: `CORS_ALLOWED_ORIGINS=https://<seu-app>.vercel.app`
-2. Redeploy do backend.
-3. Smoke test: cadastro → login → criar matéria → F5 → persiste.
-4. Atualizar README com URLs públicas (sem segredos).
+1. No Render → `unitask-api` → **Environment**:
+   ```text
+   CORS_ALLOWED_ORIGINS=https://unitask-trabalho.vercel.app,http://localhost:5173,http://127.0.0.1:5173
+   ```
+2. **Manual Deploy** do backend (ou aguarde sync do Blueprint).
+3. Recarregue https://unitask-trabalho.vercel.app — Status da API deve ficar verde.
+4. Smoke test: cadastro → login → F5 → sessão/persiste.
 
 ## Checklist rápido
 
