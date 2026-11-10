@@ -146,6 +146,39 @@ function App() {
         <Logo size="md" />
 
         <div className="flex items-center gap-3 sm:ml-auto">
+          <div
+            className="flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/90 px-2.5 py-1.5 shadow-sm"
+            title={
+              health === 'ok'
+                ? `API conectada · ${API_BASE_URL}`
+                : health === 'error'
+                  ? `API indisponível · ${API_BASE_URL}`
+                  : 'Verificando API…'
+            }
+          >
+            <span
+              className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                health === 'ok'
+                  ? 'bg-[var(--color-success)]'
+                  : health === 'error'
+                    ? 'bg-[var(--color-danger)]'
+                    : 'animate-pulse bg-slate-300'
+              }`}
+              aria-hidden
+            />
+            <span
+              className={`text-xs font-semibold ${
+                health === 'ok'
+                  ? 'text-[var(--color-success)]'
+                  : health === 'error'
+                    ? 'text-[var(--color-danger)]'
+                    : 'text-slate-500'
+              }`}
+            >
+              {health === 'ok' ? 'API ok' : health === 'error' ? 'API off' : 'API…'}
+            </span>
+          </div>
+
           <div className="flex min-w-0 items-center gap-3 rounded-2xl border border-slate-200/90 bg-white/80 py-1.5 pr-3 pl-1.5 shadow-sm">
             <UserAvatar name={user.name} size="md" />
             <div className="min-w-0 leading-tight">
@@ -180,19 +213,6 @@ function App() {
       {tab === 'tasks' && <TasksPanel onAuthLost={handleAuthLost} />}
       {tab === 'calendar' && <CalendarPanel onAuthLost={handleAuthLost} />}
       {tab === 'grades' && <GradesPanel onAuthLost={handleAuthLost} />}
-
-      <aside className="rounded-xl border border-dashed border-slate-300/80 bg-white/50 px-4 py-3 text-xs text-slate-500 backdrop-blur-sm">
-        <p className="font-semibold text-slate-600">Status da API</p>
-        {health === 'loading' && <p>Verificando…</p>}
-        {health === 'ok' && (
-          <p className="text-[var(--color-success)]">Conectada · {API_BASE_URL}</p>
-        )}
-        {health === 'error' && (
-          <p className="text-[var(--color-danger)]">
-            Indisponível. Em produção, aguarde o cold start do Render.
-          </p>
-        )}
-      </aside>
     </main>
   )
 }
