@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { AuthPanel } from './features/auth/AuthPanel'
 import { CalendarPanel } from './features/calendar/CalendarPanel'
 import { EventsPanel } from './features/events/EventsPanel'
+import { GradesPanel } from './features/grades/GradesPanel'
 import { SubjectsPanel } from './features/subjects/SubjectsPanel'
 import { TasksPanel } from './features/tasks/TasksPanel'
 import {
@@ -14,7 +15,7 @@ import {
 } from './services/api'
 
 type HealthState = 'loading' | 'ok' | 'error'
-type Tab = 'subjects' | 'events' | 'tasks' | 'calendar'
+type Tab = 'subjects' | 'events' | 'tasks' | 'calendar' | 'grades'
 
 function App() {
   const [user, setUser] = useState<UserProfile | null>(null)
@@ -122,6 +123,7 @@ function App() {
             ['events', 'Provas e trabalhos'],
             ['tasks', 'Tarefas'],
             ['calendar', 'Calendário'],
+            ['grades', 'Notas'],
           ] as const
         ).map(([id, label]) => (
           <button
@@ -143,6 +145,7 @@ function App() {
       {tab === 'events' && <EventsPanel onAuthLost={handleAuthLost} />}
       {tab === 'tasks' && <TasksPanel onAuthLost={handleAuthLost} />}
       {tab === 'calendar' && <CalendarPanel onAuthLost={handleAuthLost} />}
+      {tab === 'grades' && <GradesPanel onAuthLost={handleAuthLost} />}
 
       <aside className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-xs text-slate-500">
         <p className="font-medium text-slate-600">Status interno da API</p>

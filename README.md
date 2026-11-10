@@ -112,8 +112,11 @@ Detalhes: [docs/deployment.md](docs/deployment.md)
 | GET/PATCH/DELETE | `/api/events/{id}/` | Bearer JWT |
 | GET/POST | `/api/tasks/` | Bearer JWT |
 | GET/PATCH/DELETE | `/api/tasks/{id}/` | Bearer JWT |
+| GET/POST | `/api/assessments/` | Bearer JWT |
+| GET/PATCH/DELETE | `/api/assessments/{id}/` | Bearer JWT |
+| GET | `/api/grades/summary/` | Bearer JWT (`?subject=` opcional) |
 
 ## Status atual
 
-**Fase 5 — Calendário:** visão mensal com provas, trabalhos e tarefas (filtros `from`/`to`); detalhe ao clicar.  
+**Fase 6 — Notas:** avaliações com pesos opcionais, média (simples/ponderada) e nota necessária.  
 App: https://unitask-trabalho.vercel.app · API: https://unitask-api-2nvd.onrender.com

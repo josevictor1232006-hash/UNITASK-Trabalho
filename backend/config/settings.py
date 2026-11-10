@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "subjects",
     "academic_events",
     "tasks",
+    "grades",
 ]
 
 MIDDLEWARE = [

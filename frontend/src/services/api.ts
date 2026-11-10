@@ -78,6 +78,41 @@ export type TaskPayload = {
   priority?: TaskItem['priority']
 }
 
+export type Assessment = {
+  id: number
+  subject: number
+  name: string
+  score: string | null
+  weight: string | null
+  date: string | null
+  created_at: string
+}
+
+export type AssessmentPayload = {
+  subject: number
+  name: string
+  score?: string | number | null
+  weight?: string | number | null
+  date?: string | null
+}
+
+export type GradeSummary = {
+  subject_id: number
+  subject_name: string
+  subject_color: string
+  passing_grade: string
+  max_score: string
+  scored_count: number
+  pending_count: number
+  total_count: number
+  current_average: string | null
+  method: 'weighted' | 'simple' | null
+  needed_on_remaining: string | null
+  needed_feasible: boolean | null
+  already_passing: boolean | null
+  message: string | null
+}
+
 type TokenPair = {
   access: string
   refresh: string
@@ -285,6 +320,50 @@ export async function updateTask(
 export async function deleteTask(id: number): Promise<void> {
   const response = await authFetch(`/api/tasks/${id}/`, { method: 'DELETE' })
   if (!response.ok) throw new Error(await parseError(response))
+}
+
+export async function listAssessments(params: {
+  subject?: number | string
+} = {}): Promise<Assessment[]> {
+  const query = new URLSearchParams()
+  if (params.subject) query.set('subject', String(params.subject))
+  const suffix = query.toString() ? `?${query}` : ''
+  const response = await authFetch(`/api/assessments/${suffix}`)
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function createAssessment(payload: AssessmentPayload): Promise<Assessment> {
+  const response = await authFetch('/api/assessments/', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function updateAssessment(
+  id: number,
+  payload: Partial<AssessmentPayload>,
+): Promise<Assessment> {
+  const response = await authFetch(`/api/assessments/${id}/`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function deleteAssessment(id: number): Promise<void> {
+  const response = await authFetch(`/api/assessments/${id}/`, { method: 'DELETE' })
+  if (!response.ok) throw new Error(await parseError(response))
+}
+
+export async function fetchGradeSummary(subject?: number | string): Promise<GradeSummary | GradeSummary[]> {
+  const query = subject ? `?subject=${subject}` : ''
+  const response = await authFetch(`/api/grades/summary/${query}`)
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
 }
 
 export { API_BASE_URL }
