@@ -119,5 +119,5 @@ Detalhes: [docs/deployment.md](docs/deployment.md)
 
 ## Status atual
 
-**Fase 7 — Dashboard e alertas:** resumo de matérias/tarefas, próximos prazos, médias e alertas in-app (vencidos + 3 dias).  
+**Fase 8 — Qualidade visual:** identidade UniTask (logo/favicon), tipografia Sora/Manrope, shell, login hero e painéis refinados (paleta do pitch).  
 App: https://unitask-trabalho.vercel.app · API: https://unitask-api-2nvd.onrender.com

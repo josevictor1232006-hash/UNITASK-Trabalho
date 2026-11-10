@@ -45,7 +45,7 @@ export function DashboardPanel({ onAuthLost }: DashboardPanelProps) {
 
   if (loading) {
     return (
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="ut-panel p-6">
         <p className="text-slate-600">Carregando dashboard…</p>
       </section>
     )
@@ -53,12 +53,12 @@ export function DashboardPanel({ onAuthLost }: DashboardPanelProps) {
 
   if (error) {
     return (
-      <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="ut-panel p-6">
         <p className="text-sm text-[var(--color-danger)]">{error}</p>
         <button
           type="button"
           onClick={() => void load()}
-          className="mt-3 rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+          className="mt-3 ut-btn ut-btn-ghost text-sm"
         >
           Tentar de novo
         </button>
@@ -73,7 +73,7 @@ export function DashboardPanel({ onAuthLost }: DashboardPanelProps) {
 
   return (
     <section className="flex flex-col gap-4">
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="ut-panel p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="text-xl font-semibold text-[var(--color-brand)]">Dashboard</h2>
@@ -84,7 +84,7 @@ export function DashboardPanel({ onAuthLost }: DashboardPanelProps) {
           <button
             type="button"
             onClick={() => void load()}
-            className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700"
+            className="ut-btn ut-btn-ghost text-sm text-slate-700"
           >
             Atualizar
           </button>
@@ -98,7 +98,7 @@ export function DashboardPanel({ onAuthLost }: DashboardPanelProps) {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="ut-panel p-5">
         <h3 className="text-sm font-semibold tracking-wide text-slate-500 uppercase">Alertas</h3>
         {data.alerts.length === 0 ? (
           <p className="mt-2 text-sm text-slate-600">Nenhum prazo vencido ou próximo no momento.</p>
@@ -139,7 +139,7 @@ export function DashboardPanel({ onAuthLost }: DashboardPanelProps) {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="ut-panel p-5">
           <h3 className="text-sm font-semibold tracking-wide text-slate-500 uppercase">
             Próximas provas e trabalhos
           </h3>
@@ -161,7 +161,7 @@ export function DashboardPanel({ onAuthLost }: DashboardPanelProps) {
           )}
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="ut-panel p-5">
           <h3 className="text-sm font-semibold tracking-wide text-slate-500 uppercase">
             Próximas tarefas
           </h3>
@@ -182,7 +182,7 @@ export function DashboardPanel({ onAuthLost }: DashboardPanelProps) {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="ut-panel p-5">
         <h3 className="text-sm font-semibold tracking-wide text-slate-500 uppercase">
           Médias das matérias
         </h3>

@@ -186,7 +186,7 @@ export function CalendarPanel({ onAuthLost }: CalendarPanelProps) {
   }
 
   return (
-    <section className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="flex flex-col gap-4 ut-panel p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-lg font-semibold text-[var(--color-brand)]">Calendário</h2>
@@ -196,7 +196,7 @@ export function CalendarPanel({ onAuthLost }: CalendarPanelProps) {
           <button
             type="button"
             onClick={() => goMonth(-1)}
-            className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700"
+            className="ut-btn ut-btn-ghost text-sm text-slate-700"
           >
             Anterior
           </button>
@@ -206,7 +206,7 @@ export function CalendarPanel({ onAuthLost }: CalendarPanelProps) {
           <button
             type="button"
             onClick={() => goMonth(1)}
-            className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700"
+            className="ut-btn ut-btn-ghost text-sm text-slate-700"
           >
             Próximo
           </button>
@@ -218,7 +218,7 @@ export function CalendarPanel({ onAuthLost }: CalendarPanelProps) {
               setSelectedKey(toLocalDateKey(now))
               setSelectedItem(null)
             }}
-            className="rounded-lg bg-[var(--color-brand)] px-3 py-1.5 text-sm font-medium text-white"
+            className="ut-btn ut-btn-brand text-sm"
           >
             Hoje
           </button>

@@ -116,7 +116,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
   }
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="ut-panel p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h2 className="text-xl font-semibold text-[var(--color-brand)]">Matérias</h2>
         {editingId && (
@@ -134,7 +134,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
         <label className="block text-left text-sm sm:col-span-2">
           <span className="mb-1 block text-slate-600">Nome *</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.name}
             onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
             required
@@ -143,7 +143,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
         <label className="block text-left text-sm">
           <span className="mb-1 block text-slate-600">Código</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.code}
             onChange={(e) => setForm((prev) => ({ ...prev, code: e.target.value }))}
           />
@@ -151,7 +151,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
         <label className="block text-left text-sm">
           <span className="mb-1 block text-slate-600">Professor</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.professor}
             onChange={(e) => setForm((prev) => ({ ...prev, professor: e.target.value }))}
           />
@@ -172,7 +172,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
             min="0"
             max="10"
             step="0.1"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.passing_grade}
             onChange={(e) => setForm((prev) => ({ ...prev, passing_grade: e.target.value }))}
             required
@@ -182,7 +182,7 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-[var(--color-accent)] px-4 py-2.5 font-medium text-white disabled:opacity-60"
+            className="ut-btn ut-btn-primary"
           >
             {saving ? 'Salvando…' : editingId ? 'Salvar alterações' : 'Adicionar matéria'}
           </button>
@@ -223,21 +223,21 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
                 <button
                   type="button"
                   onClick={() => startEdit(subject)}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                  className="ut-btn ut-btn-ghost text-sm"
                 >
                   Editar
                 </button>
                 <button
                   type="button"
                   onClick={() => void handleArchive(subject.id)}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                  className="ut-btn ut-btn-ghost text-sm"
                 >
                   Arquivar
                 </button>
                 <button
                   type="button"
                   onClick={() => void handleDelete(subject.id)}
-                  className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-[var(--color-danger)]"
+                  className="ut-btn ut-btn-danger text-sm"
                 >
                   Excluir
                 </button>

@@ -42,14 +42,14 @@ export function AuthPanel({ onAuthenticated }: AuthPanelProps) {
   }
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-      <div className="mb-4 flex gap-2">
+    <div>
+      <div className="mb-5 inline-flex rounded-xl bg-slate-100 p-1">
         <button
           type="button"
-          className={`rounded-lg px-3 py-2 text-sm font-medium ${
+          className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
             mode === 'login'
-              ? 'bg-[var(--color-brand)] text-white'
-              : 'bg-slate-100 text-slate-700'
+              ? 'bg-white text-[var(--color-brand)] shadow-sm'
+              : 'text-slate-600'
           }`}
           onClick={() => setMode('login')}
         >
@@ -57,10 +57,10 @@ export function AuthPanel({ onAuthenticated }: AuthPanelProps) {
         </button>
         <button
           type="button"
-          className={`rounded-lg px-3 py-2 text-sm font-medium ${
+          className={`rounded-lg px-4 py-2 text-sm font-semibold transition ${
             mode === 'register'
-              ? 'bg-[var(--color-brand)] text-white'
-              : 'bg-slate-100 text-slate-700'
+              ? 'bg-white text-[var(--color-brand)] shadow-sm'
+              : 'text-slate-600'
           }`}
           onClick={() => setMode('register')}
         >
@@ -68,12 +68,12 @@ export function AuthPanel({ onAuthenticated }: AuthPanelProps) {
         </button>
       </div>
 
-      <form className="space-y-3" onSubmit={handleSubmit}>
+      <form className="space-y-3.5" onSubmit={handleSubmit}>
         {mode === 'register' && (
           <label className="block text-left text-sm">
-            <span className="mb-1 block text-slate-600">Nome</span>
+            <span className="mb-1.5 block font-medium text-slate-600">Nome</span>
             <input
-              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+              className="ut-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -82,10 +82,10 @@ export function AuthPanel({ onAuthenticated }: AuthPanelProps) {
         )}
 
         <label className="block text-left text-sm">
-          <span className="mb-1 block text-slate-600">E-mail</span>
+          <span className="mb-1.5 block font-medium text-slate-600">E-mail</span>
           <input
             type="email"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -93,10 +93,10 @@ export function AuthPanel({ onAuthenticated }: AuthPanelProps) {
         </label>
 
         <label className="block text-left text-sm">
-          <span className="mb-1 block text-slate-600">Senha</span>
+          <span className="mb-1.5 block font-medium text-slate-600">Senha</span>
           <input
             type="password"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             minLength={8}
@@ -106,10 +106,10 @@ export function AuthPanel({ onAuthenticated }: AuthPanelProps) {
 
         {mode === 'register' && (
           <label className="block text-left text-sm">
-            <span className="mb-1 block text-slate-600">Confirmar senha</span>
+            <span className="mb-1.5 block font-medium text-slate-600">Confirmar senha</span>
             <input
               type="password"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2"
+              className="ut-input"
               value={passwordConfirm}
               onChange={(e) => setPasswordConfirm(e.target.value)}
               minLength={8}
@@ -118,16 +118,16 @@ export function AuthPanel({ onAuthenticated }: AuthPanelProps) {
           </label>
         )}
 
-        {error && <p className="text-sm text-[var(--color-danger)]">{error}</p>}
+        {error && (
+          <p className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-[var(--color-danger)]">
+            {error}
+          </p>
+        )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-lg bg-[var(--color-accent)] px-4 py-2.5 font-medium text-white disabled:opacity-60"
-        >
-          {loading ? 'Aguarde…' : mode === 'login' ? 'Entrar' : 'Cadastrar e entrar'}
+        <button type="submit" disabled={loading} className="ut-btn ut-btn-primary w-full py-3">
+          {loading ? 'Aguarde…' : mode === 'login' ? 'Entrar no UniTask' : 'Cadastrar e entrar'}
         </button>
       </form>
-    </section>
+    </div>
   )
 }

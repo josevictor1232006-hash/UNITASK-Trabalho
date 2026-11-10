@@ -155,11 +155,11 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
   }
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="ut-panel p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-xl font-semibold text-[var(--color-brand)]">Tarefas</h2>
         <select
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="ut-input"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
@@ -174,7 +174,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
         <label className="block text-sm sm:col-span-2">
           <span className="mb-1 block text-slate-600">Título *</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.title}
             onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
             required
@@ -183,7 +183,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
         <label className="block text-sm">
           <span className="mb-1 block text-slate-600">Matéria</span>
           <select
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.subject}
             onChange={(e) => setForm((prev) => ({ ...prev, subject: e.target.value }))}
           >
@@ -198,7 +198,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
         <label className="block text-sm">
           <span className="mb-1 block text-slate-600">Prioridade</span>
           <select
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.priority}
             onChange={(e) =>
               setForm((prev) => ({
@@ -216,7 +216,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
           <span className="mb-1 block text-slate-600">Prazo</span>
           <input
             type="datetime-local"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.due_at}
             onChange={(e) => setForm((prev) => ({ ...prev, due_at: e.target.value }))}
           />
@@ -224,7 +224,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
         <label className="block text-sm">
           <span className="mb-1 block text-slate-600">Status</span>
           <select
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.status}
             onChange={(e) =>
               setForm((prev) => ({
@@ -241,7 +241,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
         <label className="block text-sm sm:col-span-2">
           <span className="mb-1 block text-slate-600">Descrição</span>
           <textarea
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             rows={2}
             value={form.description}
             onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
@@ -251,7 +251,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-[var(--color-accent)] px-4 py-2.5 font-medium text-white disabled:opacity-60"
+            className="ut-btn ut-btn-primary"
           >
             {saving ? 'Salvando…' : editingId ? 'Salvar tarefa' : 'Adicionar tarefa'}
           </button>
@@ -259,7 +259,7 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
             <button
               type="button"
               onClick={resetForm}
-              className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm"
+              className="ut-btn ut-btn-ghost text-sm"
             >
               Cancelar
             </button>
@@ -292,21 +292,21 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
                 <button
                   type="button"
                   onClick={() => startEdit(task)}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                  className="ut-btn ut-btn-ghost text-sm"
                 >
                   Editar
                 </button>
                 <button
                   type="button"
                   onClick={() => void handleToggleDone(task)}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                  className="ut-btn ut-btn-ghost text-sm"
                 >
                   {task.status === 'done' ? 'Reabrir' : 'Concluir'}
                 </button>
                 <button
                   type="button"
                   onClick={() => void handleDelete(task.id)}
-                  className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-[var(--color-danger)]"
+                  className="ut-btn ut-btn-danger text-sm"
                 >
                   Excluir
                 </button>

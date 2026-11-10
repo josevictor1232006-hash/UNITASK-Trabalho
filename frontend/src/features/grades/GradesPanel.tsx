@@ -142,7 +142,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
   const selectedSubject = subjects.find((s) => String(s.id) === subjectId)
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="ut-panel p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-xl font-semibold text-[var(--color-brand)]">Notas e médias</h2>
@@ -151,7 +151,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
           </p>
         </div>
         <select
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="ut-input"
           value={subjectId}
           onChange={(e) => {
             resetForm()
@@ -217,7 +217,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
         <label className="block text-sm sm:col-span-2">
           <span className="mb-1 block text-slate-600">Avaliação *</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.name}
             onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
             placeholder="Ex.: P1, Trabalho 1"
@@ -232,7 +232,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
             min="0"
             max="10"
             step="0.01"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.score}
             onChange={(e) => setForm((prev) => ({ ...prev, score: e.target.value }))}
             placeholder="Vazio = pendente"
@@ -245,7 +245,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
             type="number"
             min="0"
             step="0.01"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.weight}
             onChange={(e) => setForm((prev) => ({ ...prev, weight: e.target.value }))}
             disabled={!subjectId}
@@ -255,7 +255,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
           <span className="mb-1 block text-slate-600">Data</span>
           <input
             type="date"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.date}
             onChange={(e) => setForm((prev) => ({ ...prev, date: e.target.value }))}
             disabled={!subjectId}
@@ -265,7 +265,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
           <button
             type="submit"
             disabled={saving || !subjectId}
-            className="rounded-lg bg-[var(--color-accent)] px-4 py-2.5 font-medium text-white disabled:opacity-60"
+            className="ut-btn ut-btn-primary"
           >
             {saving ? 'Salvando…' : editingId ? 'Salvar avaliação' : 'Adicionar avaliação'}
           </button>
@@ -273,7 +273,7 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
             <button
               type="button"
               onClick={resetForm}
-              className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm"
+              className="ut-btn ut-btn-ghost text-sm"
             >
               Cancelar
             </button>
@@ -308,14 +308,14 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
                 <button
                   type="button"
                   onClick={() => startEdit(item)}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                  className="ut-btn ut-btn-ghost text-sm"
                 >
                   Editar
                 </button>
                 <button
                   type="button"
                   onClick={() => void handleDelete(item.id)}
-                  className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-[var(--color-danger)]"
+                  className="ut-btn ut-btn-danger text-sm"
                 >
                   Excluir
                 </button>

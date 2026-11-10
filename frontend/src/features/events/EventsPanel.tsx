@@ -147,13 +147,13 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
   }
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+    <section className="ut-panel p-6">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-xl font-semibold text-[var(--color-brand)]">
           Provas e trabalhos
         </h2>
         <select
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
+          className="ut-input"
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
         >
@@ -168,7 +168,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
         <label className="block text-sm sm:col-span-2">
           <span className="mb-1 block text-slate-600">Título *</span>
           <input
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.title}
             onChange={(e) => setForm((prev) => ({ ...prev, title: e.target.value }))}
             required
@@ -177,7 +177,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
         <label className="block text-sm">
           <span className="mb-1 block text-slate-600">Tipo</span>
           <select
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.event_type}
             onChange={(e) =>
               setForm((prev) => ({
@@ -194,7 +194,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
         <label className="block text-sm">
           <span className="mb-1 block text-slate-600">Matéria</span>
           <select
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.subject}
             onChange={(e) => setForm((prev) => ({ ...prev, subject: e.target.value }))}
           >
@@ -210,7 +210,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
           <span className="mb-1 block text-slate-600">Início *</span>
           <input
             type="datetime-local"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.start_at}
             onChange={(e) => setForm((prev) => ({ ...prev, start_at: e.target.value }))}
             required
@@ -220,7 +220,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
           <span className="mb-1 block text-slate-600">Limite</span>
           <input
             type="datetime-local"
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             value={form.due_at}
             onChange={(e) => setForm((prev) => ({ ...prev, due_at: e.target.value }))}
           />
@@ -228,7 +228,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
         <label className="block text-sm sm:col-span-2">
           <span className="mb-1 block text-slate-600">Descrição</span>
           <textarea
-            className="w-full rounded-lg border border-slate-300 px-3 py-2"
+            className="ut-input"
             rows={2}
             value={form.description}
             onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
@@ -238,7 +238,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-[var(--color-accent)] px-4 py-2.5 font-medium text-white disabled:opacity-60"
+            className="ut-btn ut-btn-primary"
           >
             {saving ? 'Salvando…' : editingId ? 'Salvar evento' : 'Adicionar evento'}
           </button>
@@ -246,7 +246,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
             <button
               type="button"
               onClick={resetForm}
-              className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm"
+              className="ut-btn ut-btn-ghost text-sm"
             >
               Cancelar
             </button>
@@ -278,7 +278,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
                 <button
                   type="button"
                   onClick={() => startEdit(item)}
-                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                  className="ut-btn ut-btn-ghost text-sm"
                 >
                   Editar
                 </button>
@@ -286,7 +286,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
                   <button
                     type="button"
                     onClick={() => void handleComplete(item.id)}
-                    className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm"
+                    className="ut-btn ut-btn-ghost text-sm"
                   >
                     Concluir
                   </button>
@@ -294,7 +294,7 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
                 <button
                   type="button"
                   onClick={() => void handleDelete(item.id)}
-                  className="rounded-lg border border-red-200 px-3 py-1.5 text-sm text-[var(--color-danger)]"
+                  className="ut-btn ut-btn-danger text-sm"
                 >
                   Excluir
                 </button>
