@@ -33,9 +33,8 @@ Toda entidade acadêmica pertence a um `User` (direta ou indiretamente).
 - date (nullable), created_at
 
 ### Notification (Alerta interno)
-- id, user_id
-- task_id (nullable), academic_event_id (nullable)
-- title, message, scheduled_at, read_at (nullable), created_at
+- **MVP:** não persistido — alertas são agregados em `/api/dashboard/` a partir de eventos/tarefas.
+- Modelo futuro (fora do MVP ativo): id, user_id, task_id, academic_event_id, title, message, scheduled_at, read_at, created_at
 
 ## Relacionamentos
 

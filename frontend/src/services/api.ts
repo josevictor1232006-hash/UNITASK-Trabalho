@@ -366,4 +366,58 @@ export async function fetchGradeSummary(subject?: number | string): Promise<Grad
   return response.json()
 }
 
+export type DashboardAlert = {
+  id: string
+  kind: 'event' | 'task'
+  ref_id: number
+  severity: 'overdue' | 'due_soon'
+  title: string
+  subtitle: string
+  when: string
+  subject_id: number | null
+  subject_name: string | null
+}
+
+export type DashboardData = {
+  generated_at: string
+  alert_window_days: number
+  subjects: { active: number; archived: number }
+  tasks: { pending: number; in_progress: number; done: number; open: number }
+  upcoming_events: Array<{
+    id: number
+    title: string
+    event_type: AcademicEvent['event_type']
+    start_at: string
+    due_at: string | null
+    subject_id: number | null
+    subject_name: string | null
+  }>
+  upcoming_tasks: Array<{
+    id: number
+    title: string
+    status: TaskItem['status']
+    priority: TaskItem['priority']
+    due_at: string | null
+    subject_id: number | null
+    subject_name: string | null
+  }>
+  alerts: DashboardAlert[]
+  grade_highlights: Array<{
+    subject_id: number
+    subject_name: string
+    subject_color: string
+    passing_grade: string
+    current_average: string
+    already_passing: boolean | null
+    needed_on_remaining: string | null
+    needed_feasible: boolean | null
+  }>
+}
+
+export async function fetchDashboard(): Promise<DashboardData> {
+  const response = await authFetch('/api/dashboard/')
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
 export { API_BASE_URL }

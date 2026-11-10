@@ -115,8 +115,9 @@ Detalhes: [docs/deployment.md](docs/deployment.md)
 | GET/POST | `/api/assessments/` | Bearer JWT |
 | GET/PATCH/DELETE | `/api/assessments/{id}/` | Bearer JWT |
 | GET | `/api/grades/summary/` | Bearer JWT (`?subject=` opcional) |
+| GET | `/api/dashboard/` | Bearer JWT (resumo + alertas in-app) |
 
 ## Status atual
 
-**Fase 6 — Notas:** avaliações com pesos opcionais, média (simples/ponderada) e nota necessária.  
+**Fase 7 — Dashboard e alertas:** resumo de matérias/tarefas, próximos prazos, médias e alertas in-app (vencidos + 3 dias).  
 App: https://unitask-trabalho.vercel.app · API: https://unitask-api-2nvd.onrender.com

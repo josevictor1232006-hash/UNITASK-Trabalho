@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AuthPanel } from './features/auth/AuthPanel'
 import { CalendarPanel } from './features/calendar/CalendarPanel'
+import { DashboardPanel } from './features/dashboard/DashboardPanel'
 import { EventsPanel } from './features/events/EventsPanel'
 import { GradesPanel } from './features/grades/GradesPanel'
 import { SubjectsPanel } from './features/subjects/SubjectsPanel'
@@ -15,13 +16,13 @@ import {
 } from './services/api'
 
 type HealthState = 'loading' | 'ok' | 'error'
-type Tab = 'subjects' | 'events' | 'tasks' | 'calendar' | 'grades'
+type Tab = 'dashboard' | 'subjects' | 'events' | 'tasks' | 'calendar' | 'grades'
 
 function App() {
   const [user, setUser] = useState<UserProfile | null>(null)
   const [sessionLoading, setSessionLoading] = useState(true)
   const [health, setHealth] = useState<HealthState>('loading')
-  const [tab, setTab] = useState<Tab>('subjects')
+  const [tab, setTab] = useState<Tab>('dashboard')
 
   const handleAuthLost = useCallback(() => {
     clearTokens()
@@ -119,6 +120,7 @@ function App() {
       <nav className="flex flex-wrap gap-2">
         {(
           [
+            ['dashboard', 'Dashboard'],
             ['subjects', 'Matérias'],
             ['events', 'Provas e trabalhos'],
             ['tasks', 'Tarefas'],
@@ -141,6 +143,7 @@ function App() {
         ))}
       </nav>
 
+      {tab === 'dashboard' && <DashboardPanel onAuthLost={handleAuthLost} />}
       {tab === 'subjects' && <SubjectsPanel onAuthLost={handleAuthLost} />}
       {tab === 'events' && <EventsPanel onAuthLost={handleAuthLost} />}
       {tab === 'tasks' && <TasksPanel onAuthLost={handleAuthLost} />}
