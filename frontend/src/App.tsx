@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AuthPanel } from './features/auth/AuthPanel'
+import { CalendarPanel } from './features/calendar/CalendarPanel'
 import { EventsPanel } from './features/events/EventsPanel'
 import { SubjectsPanel } from './features/subjects/SubjectsPanel'
 import { TasksPanel } from './features/tasks/TasksPanel'
@@ -13,7 +14,7 @@ import {
 } from './services/api'
 
 type HealthState = 'loading' | 'ok' | 'error'
-type Tab = 'subjects' | 'events' | 'tasks'
+type Tab = 'subjects' | 'events' | 'tasks' | 'calendar'
 
 function App() {
   const [user, setUser] = useState<UserProfile | null>(null)
@@ -96,7 +97,7 @@ function App() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-10">
+    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-10">
       <header className="flex flex-col gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-sm font-semibold tracking-[0.2em] text-[var(--color-accent)] uppercase">
@@ -120,6 +121,7 @@ function App() {
             ['subjects', 'Matérias'],
             ['events', 'Provas e trabalhos'],
             ['tasks', 'Tarefas'],
+            ['calendar', 'Calendário'],
           ] as const
         ).map(([id, label]) => (
           <button
@@ -140,6 +142,7 @@ function App() {
       {tab === 'subjects' && <SubjectsPanel onAuthLost={handleAuthLost} />}
       {tab === 'events' && <EventsPanel onAuthLost={handleAuthLost} />}
       {tab === 'tasks' && <TasksPanel onAuthLost={handleAuthLost} />}
+      {tab === 'calendar' && <CalendarPanel onAuthLost={handleAuthLost} />}
 
       <aside className="rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-3 text-xs text-slate-500">
         <p className="font-medium text-slate-600">Status interno da API</p>

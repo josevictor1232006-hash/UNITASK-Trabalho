@@ -204,10 +204,14 @@ export async function deleteSubject(id: number): Promise<void> {
 export async function listEvents(params: {
   status?: string
   subject?: number | string
+  from?: string
+  to?: string
 } = {}): Promise<AcademicEvent[]> {
   const query = new URLSearchParams()
   if (params.status) query.set('status', params.status)
   if (params.subject) query.set('subject', String(params.subject))
+  if (params.from) query.set('from', params.from)
+  if (params.to) query.set('to', params.to)
   const suffix = query.toString() ? `?${query}` : ''
   const response = await authFetch(`/api/events/${suffix}`)
   if (!response.ok) throw new Error(await parseError(response))
@@ -243,10 +247,14 @@ export async function deleteEvent(id: number): Promise<void> {
 export async function listTasks(params: {
   status?: string
   subject?: number | string
+  from?: string
+  to?: string
 } = {}): Promise<TaskItem[]> {
   const query = new URLSearchParams()
   if (params.status) query.set('status', params.status)
   if (params.subject) query.set('subject', String(params.subject))
+  if (params.from) query.set('from', params.from)
+  if (params.to) query.set('to', params.to)
   const suffix = query.toString() ? `?${query}` : ''
   const response = await authFetch(`/api/tasks/${suffix}`)
   if (!response.ok) throw new Error(await parseError(response))

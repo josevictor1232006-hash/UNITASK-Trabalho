@@ -115,5 +115,5 @@ Detalhes: [docs/deployment.md](docs/deployment.md)
 
 ## Status atual
 
-**Fase 4 — Eventos e tarefas:** provas/trabalhos e tarefas com filtros e isolamento por usuário.  
+**Fase 5 — Calendário:** visão mensal com provas, trabalhos e tarefas (filtros `from`/`to`); detalhe ao clicar.  
 App: https://unitask-trabalho.vercel.app · API: https://unitask-api-2nvd.onrender.com
