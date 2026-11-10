@@ -12,19 +12,25 @@ Ordem obrigatória. Não publique o frontend antes da API ter URL pública.
 
 ## 0) GitHub
 
-1. Criar repositório `unitask`.
-2. Push da `main`.
-3. Confirmar que `.gitignore` cobre `.env`, `venv/`, `node_modules/`, `__pycache__/`, `dist/`.
+Status: **concluído** — https://github.com/josevictor1232006-hash/UNITASK-Trabalho
+
+1. Repositório criado e `main` publicada.
+2. `.gitignore` cobre `.env`, `.venv/`, `node_modules/`, `__pycache__/`, `dist/`.
 
 ---
 
-## 1) Neon (banco primeiro)
+## 1) Neon (banco primeiro) — FAÇA AGORA
 
-1. New Project → PostgreSQL → região próxima.
-2. Copiar connection string (`postgresql://...?sslmode=require`).
-3. Guardar fora do Git.
-4. Essa string será `DATABASE_URL` no Render.
-5. Migrations rodam no build/start do Render — não no painel do Neon.
+1. Acesse https://neon.tech e crie/entrar na conta.
+2. **New Project** → nome `unitask` → PostgreSQL → região próxima (ex. São Paulo, se disponível).
+3. Em **Dashboard → Connection string**, copie a URL no formato:
+   `postgresql://USER:PASSWORD@HOST/DB?sslmode=require`
+4. Guarde em local seguro (bloco de notas / gerenciador de senhas). **Nunca** cole no GitHub.
+5. Para testar localmente (opcional):
+   - Cole em `backend/.env` como `DATABASE_URL=...`
+   - Rode `python manage.py migrate`
+6. No Render (próximo passo), a mesma string vira a variável `DATABASE_URL`.
+7. Migrations rodam no deploy do Render — não no painel do Neon.
 
 ---
 

@@ -98,6 +98,16 @@ Detalhes: [docs/deployment.md](docs/deployment.md)
 - [Deploy](docs/deployment.md)
 - [Plano de ação](UniTask_Plano_de_Acao_Cursor.md)
 
+## Auth (API)
+
+| Método | Endpoint | Auth |
+|---|---|---|
+| POST | `/api/auth/register/` | pública |
+| POST | `/api/auth/login/` | pública (`email` + `password`) |
+| POST | `/api/auth/refresh/` | pública (`refresh`) |
+| GET/PATCH | `/api/auth/me/` | Bearer JWT |
+
 ## Status atual
 
-**Fase 1 — Fundação:** monorepo, health check da API, frontend inicial com verificação de conexão e docs de deploy.
+**Fase 2 — Auth:** cadastro/login JWT, perfil `/me`, frontend com painel de autenticação.  
+**Próximo infra:** criar projeto PostgreSQL no Neon (ver [docs/deployment.md](docs/deployment.md)).

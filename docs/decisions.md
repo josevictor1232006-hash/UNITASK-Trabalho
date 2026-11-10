@@ -14,3 +14,5 @@ Registro das decisões travadas para evitar retrabalho.
 | D08 | Deploy | Ordem: GitHub → Neon → Render → Vercel → CORS | 2026-03-09 |
 | D09 | Tokens no frontend | `localStorage` aceitável no MVP (documentado) | 2026-03-09 |
 | D10 | Exclusão de matéria | Preferir arquivar; FKs com PROTECT onde fizer sentido | 2026-03-09 |
+| D11 | User model | Custom user com e-mail como USERNAME_FIELD (`users.User`) | 2026-03-10 |
+| D12 | Tokens JWT | Access 60 min / Refresh 7 dias; frontend em localStorage no MVP | 2026-03-10 |
