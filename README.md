@@ -106,8 +106,10 @@ Detalhes: [docs/deployment.md](docs/deployment.md)
 | POST | `/api/auth/login/` | pública (`email` + `password`) |
 | POST | `/api/auth/refresh/` | pública (`refresh`) |
 | GET/PATCH | `/api/auth/me/` | Bearer JWT |
+| GET/POST | `/api/subjects/` | Bearer JWT |
+| GET/PATCH/DELETE | `/api/subjects/{id}/` | Bearer JWT |
 
 ## Status atual
 
-**Fase 2 — Auth + Neon:** JWT pronto e PostgreSQL Neon conectado.  
-**Agora:** publicar a API no Render (ver [docs/deployment.md](docs/deployment.md) seção 2).
+**Fase 3 — Matérias:** CRUD + arquivar, com isolamento por usuário.  
+App: https://unitask-trabalho.vercel.app · API: https://unitask-api-2nvd.onrender.com

@@ -12,6 +12,27 @@ export type UserProfile = {
   created_at: string
 }
 
+export type Subject = {
+  id: number
+  name: string
+  code: string
+  professor: string
+  color: string
+  passing_grade: string
+  is_archived: boolean
+  created_at: string
+  updated_at: string
+}
+
+export type SubjectPayload = {
+  name: string
+  code?: string
+  professor?: string
+  color?: string
+  passing_grade?: string | number
+  is_archived?: boolean
+}
+
 type TokenPair = {
   access: string
   refresh: string
@@ -45,6 +66,21 @@ export function clearTokens(): void {
 function saveTokens(tokens: TokenPair): void {
   localStorage.setItem(ACCESS_TOKEN_KEY, tokens.access)
   localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refresh)
+}
+
+async function authFetch(path: string, init: RequestInit = {}): Promise<Response> {
+  const token = getAccessToken()
+  if (!token) throw new Error('Sessão não encontrada.')
+
+  const headers = new Headers(init.headers)
+  headers.set('Authorization', `Bearer ${token}`)
+  if (init.body && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json')
+  }
+
+  const response = await fetch(`${API_BASE_URL}${path}`, { ...init, headers })
+  if (response.status === 401) clearTokens()
+  return response
 }
 
 export async function checkApiHealth(): Promise<{ status: string; service: string }> {
@@ -86,17 +122,38 @@ export async function loginUser(payload: {
 }
 
 export async function fetchMe(): Promise<UserProfile> {
-  const token = getAccessToken()
-  if (!token) throw new Error('Sessão não encontrada.')
-
-  const response = await fetch(`${API_BASE_URL}/api/auth/me/`, {
-    headers: { Authorization: `Bearer ${token}` },
-  })
-  if (!response.ok) {
-    if (response.status === 401) clearTokens()
-    throw new Error(await parseError(response))
-  }
+  const response = await authFetch('/api/auth/me/')
+  if (!response.ok) throw new Error(await parseError(response))
   return response.json()
+}
+
+export async function listSubjects(archived: 'false' | 'true' | 'all' = 'false'): Promise<Subject[]> {
+  const response = await authFetch(`/api/subjects/?archived=${archived}`)
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function createSubject(payload: SubjectPayload): Promise<Subject> {
+  const response = await authFetch('/api/subjects/', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function updateSubject(id: number, payload: Partial<SubjectPayload>): Promise<Subject> {
+  const response = await authFetch(`/api/subjects/${id}/`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  })
+  if (!response.ok) throw new Error(await parseError(response))
+  return response.json()
+}
+
+export async function deleteSubject(id: number): Promise<void> {
+  const response = await authFetch(`/api/subjects/${id}/`, { method: 'DELETE' })
+  if (!response.ok) throw new Error(await parseError(response))
 }
 
 export { API_BASE_URL }
