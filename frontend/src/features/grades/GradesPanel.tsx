@@ -12,6 +12,7 @@ import {
   type GradeSummary,
   type Subject,
 } from '../../services/api'
+import { exportToExcel, stampFilename } from '../../utils/exportExcel'
 
 type GradesPanelProps = {
   onAuthLost: () => void
@@ -151,6 +152,41 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
 
   const selectedSubject = subjects.find((s) => String(s.id) === subjectId)
 
+  function handleExport() {
+    const materia = selectedSubject?.name ?? 'Matéria'
+    exportToExcel(
+      stampFilename(`unitask_notas_${materia.replace(/\s+/g, '_').toLowerCase()}`),
+      [
+        'Matéria',
+        'Avaliação',
+        'Nota',
+        'Peso',
+        'Data',
+        'Média atual',
+        'Nota necessária',
+        'Meta aprovação',
+        'Método',
+      ],
+      assessments.map((item) => [
+        materia,
+        item.name,
+        item.score ?? 'Pendente',
+        item.weight ?? '',
+        item.date
+          ? new Date(`${item.date}T12:00:00`).toLocaleDateString('pt-BR')
+          : '',
+        summary?.current_average ?? '',
+        summary?.needed_on_remaining ?? '',
+        summary?.passing_grade ?? selectedSubject?.passing_grade ?? '',
+        summary?.method === 'weighted'
+          ? 'Ponderada'
+          : summary?.method === 'simple'
+            ? 'Simples'
+            : '',
+      ]),
+    )
+  }
+
   return (
     <section className="ut-panel p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -176,6 +212,14 @@ export function GradesPanel({ onAuthLost }: GradesPanelProps) {
               </option>
             ))}
           </select>
+          <button
+            type="button"
+            className="ut-btn ut-btn-ghost"
+            onClick={handleExport}
+            disabled={assessments.length === 0}
+          >
+            Exportar Excel
+          </button>
           <button
             type="button"
             className="ut-btn ut-btn-primary"

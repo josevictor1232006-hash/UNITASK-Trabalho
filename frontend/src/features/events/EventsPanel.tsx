@@ -10,6 +10,7 @@ import {
   type AcademicEvent,
   type Subject,
 } from '../../services/api'
+import { exportToExcel, stampFilename } from '../../utils/exportExcel'
 
 type EventsPanelProps = {
   onAuthLost: () => void
@@ -156,6 +157,22 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
     return subjects.find((item) => item.id === id)?.name ?? `Matéria #${id}`
   }
 
+  function handleExport() {
+    exportToExcel(
+      stampFilename('unitask_provas_trabalhos'),
+      ['Tipo', 'Título', 'Matéria', 'Início', 'Prazo', 'Status', 'Descrição'],
+      events.map((item) => [
+        typeLabel[item.event_type],
+        item.title,
+        subjectName(item.subject),
+        formatDate(item.start_at),
+        formatDate(item.due_at),
+        item.status,
+        item.description,
+      ]),
+    )
+  }
+
   return (
     <section className="ut-panel p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -171,6 +188,14 @@ export function EventsPanel({ onAuthLost }: EventsPanelProps) {
             <option value="cancelled">Cancelados</option>
             <option value="">Todos</option>
           </select>
+          <button
+            type="button"
+            className="ut-btn ut-btn-ghost"
+            onClick={handleExport}
+            disabled={events.length === 0}
+          >
+            Exportar Excel
+          </button>
           <button type="button" className="ut-btn ut-btn-primary" onClick={openCreate}>
             Adicionar evento
           </button>

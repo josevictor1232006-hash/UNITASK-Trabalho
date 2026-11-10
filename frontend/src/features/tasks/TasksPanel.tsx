@@ -10,6 +10,7 @@ import {
   type Subject,
   type TaskItem,
 } from '../../services/api'
+import { exportToExcel, stampFilename } from '../../utils/exportExcel'
 
 type TasksPanelProps = {
   onAuthLost: () => void
@@ -164,6 +165,21 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
     return subjects.find((item) => item.id === id)?.name ?? `Matéria #${id}`
   }
 
+  function handleExport() {
+    exportToExcel(
+      stampFilename('unitask_tarefas'),
+      ['Título', 'Matéria', 'Prioridade', 'Status', 'Prazo', 'Descrição'],
+      tasks.map((task) => [
+        task.title,
+        subjectName(task.subject),
+        priorityLabel[task.priority],
+        statusLabel[task.status],
+        formatDate(task.due_at),
+        task.description,
+      ]),
+    )
+  }
+
   return (
     <section className="ut-panel p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -179,6 +195,14 @@ export function TasksPanel({ onAuthLost }: TasksPanelProps) {
             <option value="in_progress">Em andamento</option>
             <option value="done">Concluídas</option>
           </select>
+          <button
+            type="button"
+            className="ut-btn ut-btn-ghost"
+            onClick={handleExport}
+            disabled={tasks.length === 0}
+          >
+            Exportar Excel
+          </button>
           <button type="button" className="ut-btn ut-btn-primary" onClick={openCreate}>
             Adicionar tarefa
           </button>

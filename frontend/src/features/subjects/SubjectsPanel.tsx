@@ -8,6 +8,7 @@ import {
   updateSubject,
   type Subject,
 } from '../../services/api'
+import { exportToExcel, stampFilename } from '../../utils/exportExcel'
 
 type SubjectsPanelProps = {
   onAuthLost: () => void
@@ -123,13 +124,38 @@ export function SubjectsPanel({ onAuthLost }: SubjectsPanelProps) {
     }
   }
 
+  function handleExport() {
+    exportToExcel(
+      stampFilename('unitask_materias'),
+      ['Nome', 'Código', 'Professor', 'Cor', 'Média aprovação', 'Criada em'],
+      subjects.map((s) => [
+        s.name,
+        s.code,
+        s.professor,
+        s.color,
+        s.passing_grade,
+        new Date(s.created_at).toLocaleString('pt-BR'),
+      ]),
+    )
+  }
+
   return (
     <section className="ut-panel p-6">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-xl font-semibold text-[var(--color-brand)]">Matérias</h2>
-        <button type="button" className="ut-btn ut-btn-primary" onClick={openCreate}>
-          Adicionar matéria
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            className="ut-btn ut-btn-ghost"
+            onClick={handleExport}
+            disabled={subjects.length === 0}
+          >
+            Exportar Excel
+          </button>
+          <button type="button" className="ut-btn ut-btn-primary" onClick={openCreate}>
+            Adicionar matéria
+          </button>
+        </div>
       </div>
 
       {error && !modalOpen && (
