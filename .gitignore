@@ -1,0 +1,35 @@
+# Ambiente e segredos
+.env
+.env.local
+.env.*.local
+!.env.example
+**/.env
+!**/.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+backend/db.sqlite3
+backend/staticfiles/
+
+# Node
+node_modules/
+frontend/dist/
+*.log
+npm-debug.log*
+
+# IDE / SO
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Cobertura / builds
+coverage/
+*.cover
+htmlcov/
