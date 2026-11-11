@@ -2,7 +2,7 @@
 
 **Sua faculdade, organizada em um só lugar.**
 
-O UniTask é um sistema web para o estudante universitário centralizar a rotina acadêmica: matérias, provas, trabalhos, tarefas, calendário, notas, médias e um dashboard com alertas de prazo.
+O UniTask é um sistema web para o estudante universitário centralizar a rotina acadêmica: matérias, provas, trabalhos, tarefas, calendário, notas, médias e um dashboard com alertas de prazo. Aqui nós temos um sistema de CRUD e de gerenciamento estudantil para organização de rotina e matérias.
 
 **App:** https://unitask-trabalho.vercel.app
 
