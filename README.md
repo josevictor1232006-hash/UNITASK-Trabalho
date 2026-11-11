@@ -1,123 +1,120 @@
 # UniTask
 
-Sua faculdade, organizada em um só lugar.
+**Sua faculdade, organizada em um só lugar.**
 
-MVP web full stack para centralizar matérias, tarefas, provas, notas, calendário e dashboard acadêmico.
+O UniTask é um sistema web para o estudante universitário centralizar a rotina acadêmica: matérias, provas, trabalhos, tarefas, calendário, notas, médias e um dashboard com alertas de prazo.
 
-## Stack
+**App:** https://unitask-trabalho.vercel.app
 
-| Camada | Tecnologia | Hospedagem |
-|---|---|---|
-| Frontend | React + TypeScript + Vite + Tailwind | Vercel |
-| Backend | Django + Django REST Framework | Render |
-| Banco | PostgreSQL | Neon |
+---
 
-## Estrutura
+## O que o sistema faz
 
-```text
-unitask/
-├── frontend/     # Interface web
-├── backend/      # API Django
-├── docs/         # Requisitos, arquitetura e deploy
-└── README.md
-```
+### Conta do estudante
+- Cadastro, login e logout
+- Sessão protegida por usuário (cada estudante vê apenas os próprios dados)
 
-## Pré-requisitos
+### Matérias
+- Cadastrar, editar, listar e excluir disciplinas
+- Arquivar matérias que não estão em uso
+- Definir cor, código, professor e média de aprovação
 
-- Python 3.12+
-- Node.js 20+
-- Contas (para publicação): GitHub, Neon, Render, Vercel
+### Provas e trabalhos
+- Registrar provas, trabalhos e outros compromissos
+- Vincular (opcionalmente) a uma matéria
+- Filtrar por status (agendado, concluído, cancelado)
+- Concluir ou editar eventos existentes
 
-## Execução local
+### Tarefas
+- Criar, editar, concluir, reabrir e excluir tarefas
+- Prioridade (baixa, média, alta) e prazo opcional
+- Matéria opcional
+- Filtros por status
 
-### 1. Backend
+### Calendário acadêmico
+- Visão mensal com provas, trabalhos e tarefas
+- Diferenciação visual por tipo de compromisso
+- Detalhe ao clicar no dia ou no item
+
+### Notas e médias
+- Lançar avaliações por matéria (nota, peso opcional, data)
+- Cálculo automático da média atual (simples ou ponderada)
+- Indicação da nota necessária nas avaliações pendentes para atingir a aprovação
+- Situação da matéria (na média / abaixo da aprovação)
+
+### Dashboard e alertas
+- Resumo de matérias ativas e tarefas
+- Próximas provas, trabalhos e tarefas
+- Alertas in-app de prazos **vencidos** e dos **próximos 3 dias**
+- Destaque das médias por matéria
+
+### Exportação
+- Exportar para Excel (`.xlsx`) as listas de matérias, provas/trabalhos, tarefas e notas
+
+---
+
+## Como usar (fluxo típico)
+
+1. Crie sua conta e entre no sistema  
+2. Cadastre suas **matérias**  
+3. Lance **provas/trabalhos** e **tarefas** com prazos  
+4. Acompanhe tudo no **calendário** e no **dashboard**  
+5. Registre **notas** e veja a média / o que falta para passar  
+6. Exporte relatórios em Excel quando precisar  
+
+---
+
+## Execução local (resumo)
+
+**Backend**
 
 ```bash
 python -m venv .venv
-
-# Windows PowerShell
-.\.venv\Scripts\Activate.ps1
-
-# Linux/macOS
-source .venv/bin/activate
-
+.\.venv\Scripts\Activate.ps1          # Windows
+# source .venv/bin/activate           # Linux/macOS
 pip install -r backend/requirements.txt
-copy backend\.env.example backend\.env   # Windows
-# cp backend/.env.example backend/.env   # Linux/macOS
-
+copy backend\.env.example backend\.env
 cd backend
 python manage.py migrate
 python manage.py runserver
 ```
 
-API: http://127.0.0.1:8000  
-Health: http://127.0.0.1:8000/api/health/
-
-### 2. Frontend
-
-Em outro terminal:
+**Frontend** (outro terminal)
 
 ```bash
 cd frontend
-copy .env.example .env   # Windows
-# cp .env.example .env   # Linux/macOS
+copy .env.example .env
 npm install
 npm run dev
 ```
 
-App: http://localhost:5173
+- App: http://localhost:5173  
+- API: http://127.0.0.1:8000  
 
-## Testes
+Detalhes de publicação: [docs/deployment.md](docs/deployment.md)
 
-```bash
-# Backend
-cd backend
-python manage.py test
-
-# Frontend (build de verificação)
-cd frontend
-npm run build
-```
-
-## Publicação (ordem correta)
-
-1. Push no GitHub  
-2. Criar PostgreSQL no **Neon** → copiar `DATABASE_URL`  
-3. Criar Web Service no **Render** (root `backend`) → validar `/api/health/`  
-4. Publicar frontend na **Vercel** (root `frontend`) com `VITE_API_BASE_URL`  
-5. Atualizar `CORS_ALLOWED_ORIGINS` no Render com a URL da Vercel  
-
-Detalhes: [docs/deployment.md](docs/deployment.md)
+---
 
 ## Documentação
 
-- [Requisitos](docs/product-requirements.md)
-- [Arquitetura](docs/architecture.md)
-- [Banco de dados](docs/database.md)
-- [Decisões](docs/decisions.md)
-- [Deploy](docs/deployment.md)
-- [Plano de ação](UniTask_Plano_de_Acao_Cursor.md)
+| Documento | Conteúdo |
+|---|---|
+| [Requisitos](docs/product-requirements.md) | Escopo do MVP |
+| [Arquitetura](docs/architecture.md) | Visão técnica |
+| [Banco de dados](docs/database.md) | Modelo e regras de média |
+| [Decisões](docs/decisions.md) | Decisões travadas do projeto |
+| [Deploy](docs/deployment.md) | Neon → Render → Vercel |
 
-## Auth (API)
+---
 
-| Método | Endpoint | Auth |
+## Stack técnica (resumo)
+
+| Camada | Tecnologias | Hospedagem |
 |---|---|---|
-| POST | `/api/auth/register/` | pública |
-| POST | `/api/auth/login/` | pública (`email` + `password`) |
-| POST | `/api/auth/refresh/` | pública (`refresh`) |
-| GET/PATCH | `/api/auth/me/` | Bearer JWT |
-| GET/POST | `/api/subjects/` | Bearer JWT |
-| GET/PATCH/DELETE | `/api/subjects/{id}/` | Bearer JWT |
-| GET/POST | `/api/events/` | Bearer JWT |
-| GET/PATCH/DELETE | `/api/events/{id}/` | Bearer JWT |
-| GET/POST | `/api/tasks/` | Bearer JWT |
-| GET/PATCH/DELETE | `/api/tasks/{id}/` | Bearer JWT |
-| GET/POST | `/api/assessments/` | Bearer JWT |
-| GET/PATCH/DELETE | `/api/assessments/{id}/` | Bearer JWT |
-| GET | `/api/grades/summary/` | Bearer JWT (`?subject=` opcional) |
-| GET | `/api/dashboard/` | Bearer JWT (resumo + alertas in-app) |
+| Frontend | React, TypeScript, Vite, Tailwind CSS | Vercel |
+| Backend | Python, Django, Django REST Framework, JWT | Render |
+| Banco | PostgreSQL | Neon |
+| Exportação | SheetJS (xlsx) | — |
 
-## Status atual
-
-**Fase 8 — Qualidade visual:** identidade UniTask (logo/favicon), tipografia Sora/Manrope, shell, login hero e painéis refinados (paleta do pitch).  
-App: https://unitask-trabalho.vercel.app · API: https://unitask-api-2nvd.onrender.com
+API pública atual: https://unitask-api-2nvd.onrender.com  
+Health: `/api/health/`
